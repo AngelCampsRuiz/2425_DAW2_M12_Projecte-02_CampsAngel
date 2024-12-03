@@ -208,6 +208,23 @@ section img:hover {
     background-color: #d32f2f;
 }
 
+.btn-reservar {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #4CAF50;
+    cursor: pointer;
+    margin-top: 10px;
+}
+
+.btn-reservar:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
 @media (min-width: 12px) {
     .navbar-title {
         font-size: 1.5em;

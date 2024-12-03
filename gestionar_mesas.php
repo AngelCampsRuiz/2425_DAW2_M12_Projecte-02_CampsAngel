@@ -8,6 +8,7 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: index.php?error=sesion_no_iniciada");
     exit();
 }
+
 $id_sala = isset($_GET['id_sala']) ? $_GET['id_sala'] : 0;
 
 try {
@@ -26,6 +27,7 @@ try {
     }
 } catch (Exception $e) {
     echo "Error: " . $e->getMessage();
+    exit();
 }
 ?>
 <!DOCTYPE html>
@@ -41,7 +43,7 @@ try {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 </head>
 
-<body data-usuario="<?php echo htmlspecialchars($_SESSION['Usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-sweetalert="<?php echo $_SESSION['sweetalert_mostrado'] ? 'true' : 'false'; ?>" data-mesa-sweetalert="<?php echo isset($_SESSION['mesa_sweetalert']) && $_SESSION['mesa_sweetalert'] ? 'true' : 'false'; ?>">
+<body data-usuario="<?php echo htmlspecialchars($_SESSION['usuario'], ENT_QUOTES, 'UTF-8'); ?>" data-sweetalert="<?php echo $_SESSION['sweetalert_mostrado'] ? 'true' : 'false'; ?>" data-mesa-sweetalert="<?php echo isset($_SESSION['mesa_sweetalert']) && $_SESSION['mesa_sweetalert'] ? 'true' : 'false'; ?>">
     <div class="container">
         <nav class="navegacion">
             <!-- Sección izquierda con el logo grande y el ícono adicional más pequeño -->
@@ -100,20 +102,40 @@ try {
                         $result_mesas = $stmt_mesas->fetchAll(PDO::FETCH_ASSOC);
 
                         if ($result_mesas) {
+                            // Obtener el ID del usuario que ocupa la mesa, si está ocupada
+                            function obtenerIdUsuarioOcupante($conexion, $mesa_id) {
+                                $query = "SELECT id_usuario FROM tbl_ocupaciones WHERE id_mesa = :mesa_id AND fecha_fin IS NULL";
+                                $stmt = $conexion->prepare($query);
+                                $stmt->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
+                                $stmt->execute();
+                                return $stmt->fetchColumn();
+                            }
+
+                            function verificarReserva($conexion, $mesa_id) {
+                                $hora_actual = date("H:i:s");
+                                $query = "SELECT COUNT(*) FROM tbl_reservas WHERE id_mesa = :mesa_id AND hora_inicio <= :hora_actual AND hora_fin > :hora_actual AND fecha = CURDATE()";
+                                $stmt = $conexion->prepare($query);
+                                $stmt->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
+                                $stmt->bindParam(':hora_actual', $hora_actual, PDO::PARAM_STR);
+                                $stmt->execute();
+                                return $stmt->fetchColumn() > 0;
+                            }
+
                             foreach ($result_mesas as $mesa) {
+                                $mesa_id = $mesa['id_mesa'];
                                 $estado_actual = htmlspecialchars($mesa['estado']);
                                 $estado_opuesto = $estado_actual === 'libre' ? 'Ocupar' : 'Liberar';
 
-                                // Verificar si la mesa está ocupada y quién la ocupa
-                                $mesa_id = $mesa['id_mesa'];
-                                $query_ocupacion = "SELECT id_usuario FROM tbl_ocupaciones WHERE id_mesa = :mesa_id AND fecha_fin IS NULL";
-                                $stmt_ocupacion = $conexion->prepare($query_ocupacion);
-                                $stmt_ocupacion->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                                $stmt_ocupacion->execute();
-                                $id_usuario_ocupante = $stmt_ocupacion->fetchColumn();
+                                // Obtener el ID del usuario que ocupa la mesa
+                                $id_usuario_ocupante = obtenerIdUsuarioOcupante($conexion, $mesa_id);
+                                $mesa_reservada = verificarReserva($conexion, $mesa_id);
 
-                                // Si la mesa está ocupada por el usuario actual, mostrar el botón de liberación
-                                $desactivar_boton = ($estado_actual === 'ocupada' && $id_usuario !== $id_usuario_ocupante);
+                                if ($mesa_reservada) {
+                                    $estado_actual = 'reservado';
+                                    $estado_opuesto = 'No disponible';
+                                }
+
+                                $desactivar_boton_liberar = ($estado_actual === 'ocupada' && $id_usuario !== $id_usuario_ocupante) || $mesa_reservada;
 
                                 echo "
                     <div class='mesa-card'>
@@ -129,7 +151,14 @@ try {
                         <form method='POST' action='gestionar_mesas.php?categoria=$categoria_seleccionada&id_sala=$id_sala'>
                             <input type='hidden' name='mesa_id' value='" . htmlspecialchars($mesa['id_mesa']) . "'>
                             <input type='hidden' name='estado' value='" . $estado_actual . "'>
-                            <button type='submit' name='cambiar_estado' class='btn-estado " . ($estado_actual === 'libre' ? 'btn-libre' : 'btn-ocupada') . "' " . ($desactivar_boton ? 'disabled' : '') . ">" . ($estado_opuesto === 'Liberar' && $desactivar_boton ? 'No puedes liberar esta mesa' : $estado_opuesto) . "</button>
+                            <button type='submit' name='cambiar_estado' class='btn-estado " . ($estado_actual === 'libre' ? 'btn-libre' : 'btn-ocupada') . "' " . ($desactivar_boton_liberar ? 'disabled' : '') . ">" . $estado_opuesto . "</button>
+                        </form>
+                        <br>
+                        <form method='GET' action='reservar_mesa.php'>
+                            <input type='hidden' name='mesa_id' value='$mesa_id'>
+                            <input type='hidden' name='categoria' value='$categoria_seleccionada'>
+                            <input type='hidden' name='id_sala' value='$id_sala'>
+                            <button type='submit' class='btn-estado btn-libre'>Reservar</button>
                         </form>
                     </div>";
                             }
@@ -192,6 +221,8 @@ try {
         </div>
         <script src="./js/sweetalert.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
 </body>
 
 </html>

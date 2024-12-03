@@ -20,7 +20,7 @@ if (!isset($_SESSION['usuario'])) {
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    <title>Historial de Ocupaciones</title>
+    <title>Historial de Ocupaciones y Reservas</title>
 </head>
 
 <body>
@@ -35,7 +35,7 @@ if (!isset($_SESSION['usuario'])) {
 
             <!-- Título en el centro -->
             <div class="navbar-title">
-                <h3>Historial de ocupaciones</h3>
+                <h3>Historial de Ocupaciones y Reservas</h3>
             </div>
 
             <!-- Icono de logout a la derecha -->
@@ -51,7 +51,7 @@ if (!isset($_SESSION['usuario'])) {
     <br>
     <!-- Contenido principal -->
     <div id="historial-container" class="container">
-        <h2 id="titulo-historial" class="text-white">Historial de Ocupaciones</h2> <!--Título en color blanco -->
+        <h2 id="titulo-historial" class="text-white">Historial de Ocupaciones y Reservas</h2>
 
         <!-- Formulario de filtros -->
         <form method="GET" action="registro.php" class="mt-3">
@@ -109,6 +109,7 @@ if (!isset($_SESSION['usuario'])) {
                         <option value="">Todos</option>
                         <option value="libre" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'libre') ? 'selected' : ''; ?>>Libre</option>
                         <option value="ocupada" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'ocupada') ? 'selected' : ''; ?>>Ocupada</option>
+                        <option value="reservado" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'reservado') ? 'selected' : ''; ?>>Reservado</option>
                     </select>
                 </div>
 
@@ -128,15 +129,33 @@ if (!isset($_SESSION['usuario'])) {
         $estado_filter = isset($_GET['estado']) && !empty($_GET['estado']) ? $_GET['estado'] : '';
         ?>
 
-        <!-- Consulta SQL para obtener el historial de ocupaciones -->
+        <!-- Consulta SQL para obtener el historial de ocupaciones y reservas -->
         <?php
-        $query_historial = "SELECT u.nombre_user, s.nombre_sala, m.numero_mesa, m.estado, 
-                                       o.fecha_inicio, o.fecha_fin, 
-                                       TIMESTAMPDIFF(MINUTE, o.fecha_inicio, o.fecha_fin) AS duracion
-                            FROM tbl_ocupaciones o
-                            JOIN tbl_mesas m ON o.id_mesa = m.id_mesa
-                            JOIN tbl_salas s ON m.id_sala = s.id_sala
-                            JOIN tbl_usuarios u ON o.id_usuario = u.id_usuario";
+        $query_historial = "
+            SELECT u.nombre_user, s.nombre_sala, m.numero_mesa, 
+                   CASE 
+                       WHEN o.fecha_fin IS NULL THEN 'ocupada'
+                       ELSE 'libre'
+                   END AS estado,
+                   o.fecha_inicio,
+                   o.fecha_fin,
+                   TIMESTAMPDIFF(MINUTE, o.fecha_inicio, o.fecha_fin) AS duracion
+            FROM tbl_ocupaciones o
+            JOIN tbl_mesas m ON o.id_mesa = m.id_mesa
+            JOIN tbl_salas s ON m.id_sala = s.id_sala
+            LEFT JOIN tbl_usuarios u ON o.id_usuario = u.id_usuario
+            WHERE o.fecha_inicio IS NOT NULL
+            UNION
+            SELECT u.nombre_user, s.nombre_sala, m.numero_mesa, 
+                   'reservado' AS estado,
+                   r.hora_inicio AS fecha_inicio,
+                   r.hora_fin AS fecha_fin,
+                   TIMESTAMPDIFF(MINUTE, r.hora_inicio, r.hora_fin) AS duracion
+            FROM tbl_reservas r
+            JOIN tbl_mesas m ON r.id_mesa = m.id_mesa
+            JOIN tbl_salas s ON m.id_sala = s.id_sala
+            LEFT JOIN tbl_usuarios u ON r.id_usuario = u.id_usuario
+            WHERE r.hora_inicio IS NOT NULL AND r.fecha = CURDATE()";
 
         $filters = [];
         if ($usuario_filter) {
@@ -149,11 +168,11 @@ if (!isset($_SESSION['usuario'])) {
             $filters[] = "m.id_mesa = :mesa";
         }
         if ($estado_filter) {
-            $filters[] = "m.estado = :estado";
+            $filters[] = "estado = :estado";
         }
 
         if (!empty($filters)) {
-            $query_historial .= " WHERE " . implode(" AND ", $filters);
+            $query_historial .= " AND " . implode(" AND ", $filters);
         }
 
         $stmt_historial = $conexion->prepare($query_historial);
