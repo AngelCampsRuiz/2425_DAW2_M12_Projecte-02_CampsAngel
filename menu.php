@@ -12,15 +12,13 @@ if (!isset($_SESSION['sweetalert_mostrado'])) {
 }
 try {
     $usuario = $_SESSION['usuario'];
-    $query_usuario = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_user = ?";
-    $stmt_usuario = mysqli_prepare($conexion, $query_usuario);
-    mysqli_stmt_bind_param($stmt_usuario, "s", $usuario);
-    mysqli_stmt_execute($stmt_usuario);
-    mysqli_stmt_bind_result($stmt_usuario, $id_usuario);
-    mysqli_stmt_fetch($stmt_usuario);
+    $query_usuario = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_user = :usuario";
+    $stmt_usuario = $conexion->prepare($query_usuario);
+    $stmt_usuario->bindParam(':usuario', $usuario, PDO::PARAM_STR);
+    $stmt_usuario->execute();
+    $id_usuario = $stmt_usuario->fetchColumn();
     $_SESSION['id_usuario'] = $id_usuario;
-    mysqli_stmt_close($stmt_usuario);
-} catch (mysqli_sql_exception $e) {
+} catch (PDOException $e) {
     die("Error en la base de datos: " . $e->getMessage());
 }
 ?>

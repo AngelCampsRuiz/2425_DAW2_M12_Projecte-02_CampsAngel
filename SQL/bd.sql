@@ -1,6 +1,6 @@
-CREATE DATABASE bd_restaurante;
+CREATE DATABASE bd_restauranteIndividual;
 
-USE bd_restaurante;
+USE bd_restauranteIndividual;
 
 -- Tabla de usuarios para los camareros
 CREATE TABLE tbl_usuarios (
@@ -13,7 +13,8 @@ CREATE TABLE tbl_usuarios (
 CREATE TABLE tbl_salas (
     id_sala INT PRIMARY KEY AUTO_INCREMENT,
     nombre_sala VARCHAR(100),
-    tipo_sala VARCHAR(50)       -- Tipo de sala (Terraza, Comedor, Sala Privada...)
+    tipo_sala VARCHAR(50),       -- Tipo de sala (Terraza, Comedor, Sala Privada...)
+    capacidad INT                -- Capacidad de la sala
 );
 
 -- Tabla de mesas

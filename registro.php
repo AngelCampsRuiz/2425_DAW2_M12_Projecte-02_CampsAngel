@@ -7,7 +7,6 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: index.php?error=sesion_no_iniciada");
     exit();
 }
-
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +15,7 @@ if (!isset($_SESSION['usuario'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="./css/menu.css"> <!-- Archivo de estilos para el menú y la página -->
+    <link rel="stylesheet" href="./css/menu.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
@@ -58,68 +57,64 @@ if (!isset($_SESSION['usuario'])) {
         <form method="GET" action="registro.php" class="mt-3">
             <!-- Contenedor para los filtros y los botones -->
             <div class="d-flex flex-wrap align-items-center">
-
                 <!-- Filtros (Desplegables) -->
-                <div class="d-flex flex-wrap align-items-center me-3 mb-3">
-                    <div class="me-3">
-                        <label for="usuario" class="text-white">Usuario:</label>
-                        <select name="usuario" class="form-control form-control-sm" style="height: 40px; width: 200px;">
-                            <option value="">Todos</option>
-                            <?php
-                            $query_usuarios = "SELECT id_usuario, nombre_user FROM tbl_usuarios";
-                            $result_usuarios = mysqli_query($conexion, $query_usuarios);
-                            while ($usuario = mysqli_fetch_assoc($result_usuarios)) {
-                                $selected = isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id_usuario'] ? 'selected' : '';
-                                echo "<option value='{$usuario['id_usuario']}' $selected>{$usuario['nombre_user']}</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
+                <div class="me-3">
+                    <label for="usuario" class="text-white">Usuario:</label>
+                    <select name="usuario" class="form-control form-control-sm" style="height: 40px; width: 200px;">
+                        <option value="">Todos</option>
+                        <?php
+                        $query_usuarios = "SELECT id_usuario, nombre_user FROM tbl_usuarios";
+                        $stmt_usuarios = $conexion->query($query_usuarios);
+                        while ($usuario = $stmt_usuarios->fetch(PDO::FETCH_ASSOC)) {
+                            $selected = isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id_usuario'] ? 'selected' : '';
+                            echo "<option value='{$usuario['id_usuario']}' $selected>{$usuario['nombre_user']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-                    <div class="me-3">
-                        <label for="sala" class="text-white">Sala:</label>
-                        <select name="sala" class="form-control form-control-sm" style="height: 40px; width: 200px;">
-                            <option value="">Todas</option>
-                            <?php
-                            $query_salas = "SELECT id_sala, nombre_sala FROM tbl_salas";
-                            $result_salas = mysqli_query($conexion, $query_salas);
-                            while ($sala = mysqli_fetch_assoc($result_salas)) {
-                                $selected = isset($_GET['sala']) && $_GET['sala'] == $sala['id_sala'] ? 'selected' : '';
-                                echo "<option value='{$sala['id_sala']}' $selected>{$sala['nombre_sala']}</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
+                <div class="me-3">
+                    <label for="sala" class="text-white">Sala:</label>
+                    <select name="sala" class="form-control form-control-sm" style="height: 40px; width: 200px;">
+                        <option value="">Todas</option>
+                        <?php
+                        $query_salas = "SELECT id_sala, nombre_sala FROM tbl_salas";
+                        $stmt_salas = $conexion->query($query_salas);
+                        while ($sala = $stmt_salas->fetch(PDO::FETCH_ASSOC)) {
+                            $selected = isset($_GET['sala']) && $_GET['sala'] == $sala['id_sala'] ? 'selected' : '';
+                            echo "<option value='{$sala['id_sala']}' $selected>{$sala['nombre_sala']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-                    <div class="me-3">
-                        <label for="mesa" class="text-white">Mesa:</label>
-                        <select name="mesa" class="form-control form-control-sm" style="height: 40px; width: 200px;">
-                            <option value="">Todas</option>
-                            <?php
-                            $query_mesas = "SELECT id_mesa, numero_mesa FROM tbl_mesas";
-                            $result_mesas = mysqli_query($conexion, $query_mesas);
-                            while ($mesa = mysqli_fetch_assoc($result_mesas)) {
-                                $selected = isset($_GET['mesa']) && $_GET['mesa'] == $mesa['id_mesa'] ? 'selected' : '';
-                                echo "<option value='{$mesa['id_mesa']}' $selected>{$mesa['numero_mesa']}</option>";
-                            }
-                            ?>
-                        </select>
-                    </div>
+                <div class="me-3">
+                    <label for="mesa" class="text-white">Mesa:</label>
+                    <select name="mesa" class="form-control form-control-sm" style="height: 40px; width: 200px;">
+                        <option value="">Todas</option>
+                        <?php
+                        $query_mesas = "SELECT id_mesa, numero_mesa FROM tbl_mesas";
+                        $stmt_mesas = $conexion->query($query_mesas);
+                        while ($mesa = $stmt_mesas->fetch(PDO::FETCH_ASSOC)) {
+                            $selected = isset($_GET['mesa']) && $_GET['mesa'] == $mesa['id_mesa'] ? 'selected' : '';
+                            echo "<option value='{$mesa['id_mesa']}' $selected>{$mesa['numero_mesa']}</option>";
+                        }
+                        ?>
+                    </select>
+                </div>
 
-                    <div class="me-3">
-                        <label for="estado" class="text-white">Estado Sala:</label>
-                        <select name="estado" class="form-control form-control-sm" style="height: 40px; width: 200px;">
-                            <option value="">Todos</option>
-                            <option value="libre" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'libre') ? 'selected' : ''; ?>>Libre</option>
-                            <option value="ocupada" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'ocupada') ? 'selected' : ''; ?>>Ocupada</option>
-                        </select>
-                    </div>
+                <div class="me-3">
+                    <label for="estado" class="text-white">Estado Sala:</label>
+                    <select name="estado" class="form-control form-control-sm" style="height: 40px; width: 200px;">
+                        <option value="">Todos</option>
+                        <option value="libre" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'libre') ? 'selected' : ''; ?>>Libre</option>
+                        <option value="ocupada" <?php echo (isset($_GET['estado']) && $_GET['estado'] == 'ocupada') ? 'selected' : ''; ?>>Ocupada</option>
+                    </select>
+                </div>
 
-                    <!-- Botones -->
-                    <div class="d-flex align-items-center mt-3">
-                        <button type="submit" class="btn btn-primary btn-sm me-2" style="height: 40px; width: 200px; margin-top: 10px; margin-right: 10px; margin-bottom: 2px;">Filtrar</button>
-                        <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='registro.php'" style="height: 40px; width: 200px; margin-top: 10px; margin-left: 7px;">Borrar Filtros</button>
-                    </div>
+                <div class="d-flex align-items-center mt-3">
+                    <button type="submit" class="btn btn-primary btn-sm me-2" style="height: 40px; width: 200px; margin-top: 10px; margin-right: 10px; margin-bottom: 2px;">Filtrar</button>
+                    <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='registro.php'" style="height: 40px; width: 200px; margin-top: 10px; margin-left: 7px;">Borrar Filtros</button>
                 </div>
             </div>
         </form>
@@ -145,23 +140,38 @@ if (!isset($_SESSION['usuario'])) {
 
         $filters = [];
         if ($usuario_filter) {
-            $filters[] = "u.id_usuario = '" . mysqli_real_escape_string($conexion, $usuario_filter) . "'";
+            $filters[] = "u.id_usuario = :usuario";
         }
         if ($sala_filter) {
-            $filters[] = "s.id_sala = '" . mysqli_real_escape_string($conexion, $sala_filter) . "'";
+            $filters[] = "s.id_sala = :sala";
         }
         if ($mesa_filter) {
-            $filters[] = "m.id_mesa = '" . mysqli_real_escape_string($conexion, $mesa_filter) . "'";
+            $filters[] = "m.id_mesa = :mesa";
         }
         if ($estado_filter) {
-            $filters[] = "m.estado = '" . mysqli_real_escape_string($conexion, $estado_filter) . "'";
+            $filters[] = "m.estado = :estado";
         }
 
         if (!empty($filters)) {
             $query_historial .= " WHERE " . implode(" AND ", $filters);
         }
 
-        $result_historial = mysqli_query($conexion, $query_historial);
+        $stmt_historial = $conexion->prepare($query_historial);
+
+        if ($usuario_filter) {
+            $stmt_historial->bindParam(':usuario', $usuario_filter, PDO::PARAM_INT);
+        }
+        if ($sala_filter) {
+            $stmt_historial->bindParam(':sala', $sala_filter, PDO::PARAM_INT);
+        }
+        if ($mesa_filter) {
+            $stmt_historial->bindParam(':mesa', $mesa_filter, PDO::PARAM_INT);
+        }
+        if ($estado_filter) {
+            $stmt_historial->bindParam(':estado', $estado_filter, PDO::PARAM_STR);
+        }
+
+        $stmt_historial->execute();
         ?>
 
         <!-- Mostrar resultados en tabla -->
@@ -180,7 +190,7 @@ if (!isset($_SESSION['usuario'])) {
                 </thead>
                 <tbody>
                     <?php
-                    while ($ocupacion = mysqli_fetch_assoc($result_historial)) {
+                    while ($ocupacion = $stmt_historial->fetch(PDO::FETCH_ASSOC)) {
                         echo "<tr>
                         <td>{$ocupacion['nombre_user']}</td>
                         <td>{$ocupacion['nombre_sala']}</td>

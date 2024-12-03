@@ -1,12 +1,14 @@
 <?php
 
-$dbserver="localhost";
-$dbusername="root";
-$dbpassword="";
-$dbbasedatos="bd_restaurante";
+$dbserver = "localhost";
+$dbusername = "root";
+$dbpassword = "";
+$dbbasedatos = "bd_restauranteIndividual";
+
 try {
-    $conexion = mysqli_connect($dbserver, $dbusername,$dbpassword, $dbbasedatos);
-}catch (Exception $e) {
-    echo "Error de conexión: ". $e->getMessage();
+    $conexion = new PDO("mysql:host=$dbserver;dbname=$dbbasedatos;charset=utf8", $dbusername, $dbpassword);
+    $conexion->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "Error de conexión: " . $e->getMessage();
     die();
 }
