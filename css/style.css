@@ -1,0 +1,105 @@
+html {
+    font-family: "Roboto", serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+#body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+body {
+    background-image: url(../img/fondo.jpg);
+    background-size: cover;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: auto;
+    background-color: white;
+    padding: 2%;
+    border-radius: 10px;
+    flex-direction: column;
+}
+
+.left-side {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+}
+
+.left-side img {
+    max-width: 100%;
+    height: auto;
+}
+
+.right-side {
+    width: 100%;
+    padding-left: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.form-login {
+    width: 100%;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+h2 {
+    text-align: center;
+}
+
+.form-login-label {
+    width: 100%;
+    padding: 2%;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    background-color: #D9D9D9;
+    margin-bottom: 1em;
+}
+
+.form-login-button {
+    text-align: center;
+    width: 100%;
+    background-color: #2C2C2C;
+    color: white;
+    padding: 2%;
+    border-radius: 10px;
+    border: none;
+    cursor: pointer;
+}
+
+/* Responsive Styles */
+@media (min-width: 768px) {
+    .container {
+        width: 80%;
+        flex-direction: row;
+        padding: 2%;
+    }
+
+    .left-side {
+        width: 40%;
+        max-width: 300px;
+        margin-bottom: 0;
+    }
+
+    .right-side {
+        width: 60%;
+        padding-left: 3%;
+    }
+}
+

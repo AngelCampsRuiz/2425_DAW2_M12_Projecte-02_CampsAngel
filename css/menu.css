@@ -1,0 +1,321 @@
+html {
+    font-family: "Roboto", serif;
+    font-style: normal;
+    font-weight: bold;
+}
+
+body {
+    background-image: url(../img/fondo.jpg);
+    justify-content: center;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.container {
+    padding-top: 5%;
+    padding-bottom: 5%;
+}
+
+#historial-container {
+    margin-top: -100px; 
+}
+
+.navegacion {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: white;
+    color: #000000;
+    padding: 10px 20px;
+    width: 100%;
+    height: 15vh;
+    border-radius: 10px;
+}
+
+.navbar-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.navbar-left .logo {
+    height: auto;
+    max-height: 22vh;
+    width: auto;
+    object-fit: contain;
+}
+
+.btn-estado.btn-libre {
+    background-color: #4CAF50; 
+    color: #fff;
+}
+
+.btn-estado.btn-ocupada {
+    background-color: #d32f2f; 
+    color: #fff;
+}
+
+.navbar-left .navbar-icon {
+    height: 30px;
+    cursor: pointer;
+}
+
+.navbar-title {
+    width: 100%;
+    flex-grow: 1;
+    text-align: center;
+    font-size: 1.2em;
+    padding-right: 10%;
+}
+
+.navbar-right img {
+    height: 30px;
+    cursor: pointer;
+}
+
+section {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 20px;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.image-container {
+    position: relative;
+    width: 100%;
+    max-width: 300px;
+    height: 60vh;
+    overflow: hidden;
+    transition: transform 0.5s ease;
+    flex: 1 1 200px;
+    margin: 10px;
+    text-align: center;
+}
+
+section img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    opacity: 0.8;
+    border-radius: 10px;
+    transition: transform 0.5s ease, opacity 0.5s ease, filter 0.5s ease;
+}
+
+section img:hover {
+    opacity: 1;
+    filter: brightness(0.4);
+}
+
+.image-container:hover {
+    transform: scale(1.1);
+}
+
+.text-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 20px;
+    font-weight: bold;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.image-container:hover .text-overlay {
+    opacity: 1;
+}
+
+.container-menu {
+    padding-left: 3%; 
+    padding-right: 3%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 10px;
+}
+
+#icono-navbar {
+    width: 50%;
+}
+
+.mesas-container {
+    padding-top: 5%;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-evenly;
+}
+
+.mesa-card {
+    width: 25%;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    text-align: center;
+    background-color: #fff;
+    margin: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.mesa-card h3 {
+    font-size: 1.2em;
+    margin-bottom: 10px;
+}
+
+.mesa-image img {
+    width: 80%;
+    height: 30vh;
+    margin-bottom: 10px;
+}
+
+.mesa-info p {
+    margin: 4px 0;
+    font-size: 0.9em;
+}
+
+.estado-libre {
+    color: green;
+    font-weight: bold;
+}
+
+.estado-ocupada {
+    color: red;
+    font-weight: bold;
+}
+
+.btn-estado {
+    width: 100%;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    font-size: 1em;
+    color: #fff;
+    background-color: #4CAF50;
+    cursor: pointer;
+}
+
+.btn-estado:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.btn-estado[disabled] {
+    background-color: #d32f2f;
+}
+
+@media (min-width: 12px) {
+    .navbar-title {
+        font-size: 1.5em;
+    }
+
+    .navegacion {
+        padding: 15px 30px;
+    }
+
+    section {
+        gap: 30px;
+    }
+
+    .image-container {
+        max-width: 400px;
+        height: 400px;
+    }
+
+    .navbar-left .logo {
+        max-height: 25vh;
+        width: auto;
+    }
+
+    .mesa-card {
+        width: 100%;
+        margin: 10px 0;
+    }
+
+    .mesa-image img {
+        height: auto;
+    }
+
+    .mesas-container {
+        justify-content: center;
+        padding-left: 2%;
+        padding-right: 2%;
+    }
+
+    #titulo-historial {
+        margin-top: 60px;
+        font-size: 20px;
+    }
+
+    .table td, .table th {
+        padding: 8px;
+        font-size: 12px;
+        border: 1px solid #ddd;
+    }
+    .table thead th {
+        background-color: #A7A1A1;
+        color: white;
+        font-weight: bold;
+    }
+}
+
+@media (min-width: 768px) {
+    .mesa-card {
+        width: 25%;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        padding: 16px;
+        text-align: center;
+        background-color: #fff;
+        margin: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .navbar-left .logo {
+        height: auto; 
+        max-height: 22vh; 
+        width: auto; 
+        object-fit: contain; 
+    }
+
+    .mesa-image img {
+        width: 80%;
+        height: 30vh;
+        margin-bottom: 10px;
+    }
+
+    .mesas-container {
+        padding-top: 5%;
+        width: 100%;
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-evenly;
+    }
+
+    #titulo-historial {
+        font-size: 30px;
+        margin-top: 0;
+    }
+ 
+    .table {
+        border-collapse: collapse;
+        width: 100%;
+        margin: 0 auto; 
+    }
+
+    .table th, .table td {
+        padding: 12px;
+        text-align: center;
+        border: 1px solid #ddd;
+        font-size: 16px;
+    }
+    .table thead th {
+        background-color: #A7A1A1;
+        color: white;
+        font-weight: bold;
+    }
+}
