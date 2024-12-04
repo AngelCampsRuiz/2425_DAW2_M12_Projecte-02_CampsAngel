@@ -21,6 +21,18 @@ try {
 } catch (PDOException $e) {
     die("Error en la base de datos: " . $e->getMessage());
 }
+
+// Obtener el rol del usuario
+try {
+    $query_rol = "SELECT rol FROM tbl_usuarios WHERE nombre_user = :usuario";
+    $stmt_rol = $conexion->prepare($query_rol);
+    $stmt_rol->bindParam(':usuario', $usuario, PDO::PARAM_STR);
+    $stmt_rol->execute();
+    $rol_usuario = $stmt_rol->fetchColumn();
+    $_SESSION['rol_usuario'] = $rol_usuario;
+} catch (PDOException $e) {
+    die("Error en la base de datos: " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -50,6 +62,13 @@ try {
                                     echo $_SESSION['usuario'];
                                 } ?></h3>
             </div>
+
+            <!-- Botón solo para administradores -->
+            <?php if ($_SESSION['rol_usuario'] === 'administrador') : ?>
+                <div class="navbar-admin">
+                    <a href="./admin_panel.php" class="btn btn-primary">Panel Admin</a>
+                </div>
+            <?php endif; ?>
 
             <!-- Icono de logout a la derecha -->
             <div class="navbar-right">
