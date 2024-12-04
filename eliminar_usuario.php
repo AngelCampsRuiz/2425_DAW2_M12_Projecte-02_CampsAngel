@@ -29,11 +29,11 @@ try {
     $stmt->execute();
 
     $conexion->commit();
+
+    header('Location: admin_panel.php?message=Usuario eliminado correctamente');
+    exit();
 } catch (Exception $e) {
     $conexion->rollBack();
     die("Error al eliminar el usuario: " . $e->getMessage());
 }
-
-header('Location: admin_panel.php');
-exit();
 ?> 

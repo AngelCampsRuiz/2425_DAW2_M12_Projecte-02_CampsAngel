@@ -24,7 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':id', $id_usuario);
     $stmt->execute();
 
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php?message=Usuario editado correctamente');
     exit();
 }
 ?>

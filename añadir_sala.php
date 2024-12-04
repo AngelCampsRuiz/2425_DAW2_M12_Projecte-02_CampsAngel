@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':capacidad', $capacidad);
     $stmt->execute();
 
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php?message=Sala añadida correctamente');
     exit();
 }
 ?>

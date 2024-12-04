@@ -24,11 +24,11 @@ try {
     $stmt->execute();
 
     $conexion->commit();
+
+    header('Location: admin_panel.php?message=Mesa eliminada correctamente');
+    exit();
 } catch (Exception $e) {
     $conexion->rollBack();
     die("Error al eliminar la mesa: " . $e->getMessage());
 }
-
-header('Location: admin_panel.php');
-exit();
 ?> 

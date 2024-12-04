@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':rol', $rol);
     $stmt->execute();
 
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php?message=Usuario añadido correctamente');
     exit();
 }
 ?>

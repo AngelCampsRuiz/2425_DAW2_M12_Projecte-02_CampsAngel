@@ -19,7 +19,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':numero_sillas', $numero_sillas);
     $stmt->execute();
 
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php?message=Mesa añadida correctamente');
     exit();
 }
 ?>

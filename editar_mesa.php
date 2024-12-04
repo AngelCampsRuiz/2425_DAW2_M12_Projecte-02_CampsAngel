@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $stmt->bindParam(':id', $id_mesa);
     $stmt->execute();
 
-    header('Location: admin_panel.php');
+    header('Location: admin_panel.php?message=Mesa editada correctamente');
     exit();
 }
 ?>
