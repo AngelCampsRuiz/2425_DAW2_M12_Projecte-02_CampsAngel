@@ -1,9 +1,9 @@
-CREATE DATABASE bd_restauranteIndividual;
+CREATE DATABASE IF NOT EXISTS bd_restauranteIndividual;
 
 USE bd_restauranteIndividual;
 
 -- Tabla de usuarios
-CREATE TABLE tbl_usuarios (
+CREATE TABLE IF NOT EXISTS tbl_usuarios (
     id_usuario INT PRIMARY KEY AUTO_INCREMENT,
     nombre_user VARCHAR(100),
     contrasena VARCHAR(100),
@@ -11,7 +11,7 @@ CREATE TABLE tbl_usuarios (
 );
 
 -- Tabla de salas
-CREATE TABLE tbl_salas (
+CREATE TABLE IF NOT EXISTS tbl_salas (
     id_sala INT PRIMARY KEY AUTO_INCREMENT,
     nombre_sala VARCHAR(100),
     tipo_sala VARCHAR(50),
@@ -19,7 +19,7 @@ CREATE TABLE tbl_salas (
 );
 
 -- Tabla de mesas
-CREATE TABLE tbl_mesas (
+CREATE TABLE IF NOT EXISTS tbl_mesas (
     id_mesa INT PRIMARY KEY AUTO_INCREMENT,
     numero_mesa INT,
     id_sala INT,
@@ -29,24 +29,13 @@ CREATE TABLE tbl_mesas (
 );
 
 -- Tabla de reservas
-CREATE TABLE tbl_reservas (
+CREATE TABLE IF NOT EXISTS tbl_reservas (
     id_reserva INT PRIMARY KEY AUTO_INCREMENT,
     id_usuario INT,
     id_mesa INT,
     fecha DATE,
     hora_inicio TIME,
     hora_fin TIME,
-    FOREIGN KEY (id_usuario) REFERENCES tbl_usuarios(id_usuario),
-    FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa)
-);
-
--- Tabla de ocupaciones de mesas
-CREATE TABLE tbl_ocupaciones (
-    id_ocupacion INT PRIMARY KEY AUTO_INCREMENT,
-    id_usuario INT,
-    id_mesa INT,
-    fecha_inicio DATETIME DEFAULT CURRENT_TIMESTAMP,
-    fecha_fin DATETIME,
     FOREIGN KEY (id_usuario) REFERENCES tbl_usuarios(id_usuario),
     FOREIGN KEY (id_mesa) REFERENCES tbl_mesas(id_mesa)
 );
@@ -100,8 +89,8 @@ INSERT INTO tbl_mesas (numero_mesa, id_sala, numero_sillas, estado) VALUES
     (801, 8, 16, 'libre'),
     (901, 9, 18, 'libre');
 
--- Insertar ocupaciones de ejemplo
-INSERT INTO tbl_ocupaciones (id_usuario, id_mesa, fecha_inicio, fecha_fin) VALUES
-    (1, 1, '2024-11-15 12:30:00', '2024-11-15 14:30:00'),
-    (2, 3, '2024-11-15 18:00:00', '2024-11-15 19:30:00'),
-    (3, 5, '2024-11-15 20:00:00', '2024-11-15 22:00:00');
+-- Insertar reservas de ejemplo
+INSERT INTO tbl_reservas (id_usuario, id_mesa, fecha, hora_inicio, hora_fin) VALUES
+    (1, 1, '2024-11-15', '12:00:00', '14:00:00'),
+    (2, 3, '2024-11-15', '18:00:00', '19:00:00'),
+    (3, 5, '2024-11-15', '20:00:00', '22:00:00');
