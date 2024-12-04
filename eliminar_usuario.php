@@ -9,9 +9,30 @@ if ($_SESSION['rol_usuario'] !== 'administrador') {
 }
 
 $id_usuario = $_GET['id'];
-$stmt = $conexion->prepare("DELETE FROM tbl_usuarios WHERE id_usuario = :id");
-$stmt->bindParam(':id', $id_usuario);
-$stmt->execute();
+
+try {
+    $conexion->beginTransaction();
+
+    // Eliminar ocupaciones del usuario
+    $stmt = $conexion->prepare("DELETE FROM tbl_ocupaciones WHERE id_usuario = :id");
+    $stmt->bindParam(':id', $id_usuario);
+    $stmt->execute();
+
+    // Eliminar reservas del usuario
+    $stmt = $conexion->prepare("DELETE FROM tbl_reservas WHERE id_usuario = :id");
+    $stmt->bindParam(':id', $id_usuario);
+    $stmt->execute();
+
+    // Eliminar el usuario
+    $stmt = $conexion->prepare("DELETE FROM tbl_usuarios WHERE id_usuario = :id");
+    $stmt->bindParam(':id', $id_usuario);
+    $stmt->execute();
+
+    $conexion->commit();
+} catch (Exception $e) {
+    $conexion->rollBack();
+    die("Error al eliminar el usuario: " . $e->getMessage());
+}
 
 header('Location: admin_panel.php');
 exit();

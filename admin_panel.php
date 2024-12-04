@@ -118,6 +118,39 @@ function obtenerSalas($conexion) {
         <a href="añadir_sala.php" class="btn btn-primary btn-sm">Añadir Sala</a>
     </div>
 
+    <div class="container crud-container">
+        <h2 class="text-white">Gestión de Mesas</h2>
+        <!-- Tabla de mesas -->
+        <table class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Número de Mesa</th>
+                    <th>Sala</th>
+                    <th>Número de Sillas</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $stmt = $conexion->query("SELECT m.id_mesa, m.numero_mesa, s.nombre_sala, m.numero_sillas FROM tbl_mesas m JOIN tbl_salas s ON m.id_sala = s.id_sala");
+                while ($mesa = $stmt->fetch(PDO::FETCH_ASSOC)): ?>
+                <tr>
+                    <td><?php echo $mesa['id_mesa']; ?></td>
+                    <td><?php echo $mesa['numero_mesa']; ?></td>
+                    <td><?php echo $mesa['nombre_sala']; ?></td>
+                    <td><?php echo $mesa['numero_sillas']; ?></td>
+                    <td>
+                        <a href="editar_mesa.php?id=<?php echo $mesa['id_mesa']; ?>" class="btn btn-warning btn-sm">Editar</a>
+                        <a href="eliminar_mesa.php?id=<?php echo $mesa['id_mesa']; ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                    </td>
+                </tr>
+                <?php endwhile; ?>
+            </tbody>
+        </table>
+        <a href="añadir_mesa.php" class="btn btn-primary btn-sm">Añadir Mesa</a>
+    </div>
+
     <script src="./js/sweetalert.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
 </body>
