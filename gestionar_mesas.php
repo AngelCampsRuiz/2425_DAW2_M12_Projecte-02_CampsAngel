@@ -102,40 +102,10 @@ try {
                         $result_mesas = $stmt_mesas->fetchAll(PDO::FETCH_ASSOC);
 
                         if ($result_mesas) {
-                            // Obtener el ID del usuario que ocupa la mesa, si está ocupada
-                            function obtenerIdUsuarioOcupante($conexion, $mesa_id) {
-                                $query = "SELECT id_usuario FROM tbl_ocupaciones WHERE id_mesa = :mesa_id AND fecha_fin IS NULL";
-                                $stmt = $conexion->prepare($query);
-                                $stmt->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                                $stmt->execute();
-                                return $stmt->fetchColumn();
-                            }
-
-                            function verificarReserva($conexion, $mesa_id) {
-                                $hora_actual = date("H:i:s");
-                                $query = "SELECT COUNT(*) FROM tbl_reservas WHERE id_mesa = :mesa_id AND hora_inicio <= :hora_actual AND hora_fin > :hora_actual AND fecha = CURDATE()";
-                                $stmt = $conexion->prepare($query);
-                                $stmt->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                                $stmt->bindParam(':hora_actual', $hora_actual, PDO::PARAM_STR);
-                                $stmt->execute();
-                                return $stmt->fetchColumn() > 0;
-                            }
-
                             foreach ($result_mesas as $mesa) {
                                 $mesa_id = $mesa['id_mesa'];
                                 $estado_actual = htmlspecialchars($mesa['estado']);
                                 $estado_opuesto = $estado_actual === 'libre' ? 'Ocupar' : 'Liberar';
-
-                                // Obtener el ID del usuario que ocupa la mesa
-                                $id_usuario_ocupante = obtenerIdUsuarioOcupante($conexion, $mesa_id);
-                                $mesa_reservada = verificarReserva($conexion, $mesa_id);
-
-                                if ($mesa_reservada) {
-                                    $estado_actual = 'reservado';
-                                    $estado_opuesto = 'No disponible';
-                                }
-
-                                $desactivar_boton_liberar = ($estado_actual === 'ocupada' && $id_usuario !== $id_usuario_ocupante) || $mesa_reservada;
 
                                 echo "
                     <div class='mesa-card'>
@@ -148,16 +118,10 @@ try {
                             <p><strong>Estado:</strong> <span class='" . ($estado_actual == 'libre' ? 'estado-libre' : 'estado-ocupada') . "'>" . ucfirst($estado_actual) . "</span></p>
                             <p><strong>Sillas:</strong> " . htmlspecialchars($mesa['numero_sillas']) . "</p>
                         </div>
-                        <form method='POST' action='gestionar_mesas.php?categoria=$categoria_seleccionada&id_sala=$id_sala'>
-                            <input type='hidden' name='mesa_id' value='" . htmlspecialchars($mesa['id_mesa']) . "'>
-                            <input type='hidden' name='estado' value='" . $estado_actual . "'>
-                            <button type='submit' name='cambiar_estado' class='btn-estado " . ($estado_actual === 'libre' ? 'btn-libre' : 'btn-ocupada') . "' " . ($desactivar_boton_liberar ? 'disabled' : '') . ">" . $estado_opuesto . "</button>
-                        </form>
-                        <br>
                         <form method='GET' action='reservar_mesa.php'>
-                            <input type='hidden' name='mesa_id' value='$mesa_id'>
-                            <input type='hidden' name='categoria' value='$categoria_seleccionada'>
-                            <input type='hidden' name='id_sala' value='$id_sala'>
+                            <input type='hidden' name='mesa_id' value='" . htmlspecialchars($mesa['id_mesa']) . "'>
+                            <input type='hidden' name='categoria' value='" . htmlspecialchars($categoria_seleccionada) . "'>
+                            <input type='hidden' name='id_sala' value='" . htmlspecialchars($id_sala) . "'>
                             <button type='submit' class='btn-estado btn-libre'>Reservar</button>
                         </form>
                     </div>";
@@ -172,42 +136,34 @@ try {
                     echo "<p>Faltan parámetros para la selección de sala o categoría.</p>";
                 }
 
-                // Manejar el cambio de estado de las mesas
-                if (isset($_POST['cambiar_estado'])) {
+                // Cambiar el manejo del estado de las mesas para que solo se pueda reservar
+                if (isset($_POST['reservar_mesa'])) {
                     $mesa_id = $_POST['mesa_id'];
-                    $estado_nuevo = $_POST['estado'] == 'libre' ? 'ocupada' : 'libre';
                     $fecha_hora = date("Y-m-d H:i:s");
 
-                    $query_update = "UPDATE tbl_mesas SET estado = :estado WHERE id_mesa = :mesa_id";
-                    $stmt_update = $conexion->prepare($query_update);
-                    $stmt_update->bindParam(':estado', $estado_nuevo, PDO::PARAM_STR);
-                    $stmt_update->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                    $stmt_update->execute();
-
-                    // Si la mesa se ocupa, insertar la ocupación
-                    if ($estado_nuevo == 'ocupada') {
-                        $query_insert = "INSERT INTO tbl_ocupaciones (id_usuario, id_mesa, fecha_inicio) VALUES (:id_usuario, :mesa_id, :fecha_hora)";
-                        $stmt_insert = $conexion->prepare($query_insert);
-                        $stmt_insert->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
-                        $stmt_insert->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                        $stmt_insert->bindParam(':fecha_hora', $fecha_hora, PDO::PARAM_STR);
-                        $stmt_insert->execute();
-                    } else {
-                        $query_end = "UPDATE tbl_ocupaciones SET fecha_fin = :fecha_hora WHERE id_mesa = :mesa_id AND fecha_fin IS NULL";
-                        $stmt_end = $conexion->prepare($query_end);
-                        $stmt_end->bindParam(':fecha_hora', $fecha_hora, PDO::PARAM_STR);
-                        $stmt_end->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                        $stmt_end->execute();
-                    }
+                    // Insertar una nueva reserva
+                    $query_insert = "INSERT INTO tbl_reservas (id_usuario, id_mesa, fecha, hora_inicio, hora_fin) VALUES (:id_usuario, :mesa_id, CURDATE(), :hora_inicio, :hora_fin)";
+                    $stmt_insert = $conexion->prepare($query_insert);
+                    $stmt_insert->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+                    $stmt_insert->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
+                    $stmt_insert->bindParam(':hora_inicio', $hora_inicio, PDO::PARAM_STR);
+                    $stmt_insert->bindParam(':hora_fin', $hora_fin, PDO::PARAM_STR);
+                    $stmt_insert->execute();
 
                     // Establecer una variable de sesión para indicar que se debe mostrar el SweetAlert
                     $_SESSION['mesa_sweetalert'] = true;
                 }
 
+                // Redirigir después de reservar
+                if (isset($_POST['reservar_mesa'])) {
+                    header("Location: gestionar_mesas.php?categoria=$categoria_seleccionada&id_sala=$id_sala");
+                    exit();
+                }
+
                 $conexion->commit();
 
                 // Redirigir después de cambiar el estado
-                if (isset($_POST['cambiar_estado'])) {
+                if (isset($_POST['reservar_mesa'])) {
                     header("Location: gestionar_mesas.php?categoria=$categoria_seleccionada&id_sala=$id_sala");
                     exit();
                 }
