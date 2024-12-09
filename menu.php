@@ -90,7 +90,9 @@ function buscarImagen($nombre) {
             <!-- Botón solo para administradores -->
             <?php if ($_SESSION['rol_usuario'] === 'administrador') : ?>
                 <div class="navbar-admin">
-                    <a href="./admin_panel.php" class="btn btn-primary">Panel Admin</a>
+                    <a href="./admin_panel.php">
+                        <img src="./img/admin.png" alt="Admin" style="width: 40px; height: 40px; margin-right: 15px;">
+                    </a>
                 </div>
             <?php endif; ?>
 
