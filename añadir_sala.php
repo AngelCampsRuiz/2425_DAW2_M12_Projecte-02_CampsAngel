@@ -62,8 +62,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Añadir Sala</title>
 </head>
 <body>
-    <div class="container mt-4">
-        <h2 class="text-white">Añadir Sala</h2>
+<div class="container">
+        <nav class="navegacion">
+            <div class="navbar-left">
+                <a href="./menu.php"><img src="./img/logo.png" alt="Logo de la Marca" class="logo" style="width: 100%;"></a>
+            </div>
+            <div class="navbar-title">
+                <h3>Añadir Sala</h3>
+            </div>
+            <div class="navbar-right" style="margin-right: 18px;">
+                <a href="./admin_panel.php"><img src="./img/atras.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+            <div class="navbar-right">
+                <a href="./salir.php"><img src="./img/logout.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+        </nav>
+    </div>
+    <div class="container crud-container">
         <form method="POST" action="añadir_sala.php" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nombre_sala" class="form-label text-white">Nombre de Sala</label>

@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -33,9 +34,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Añadir Mesa</title>
 </head>
+
 <body>
-    <div class="container mt-4">
-        <h2 class="text-white">Añadir Mesa</h2>
+    <div class="container">
+        <nav class="navegacion">
+            <div class="navbar-left">
+                <a href="./menu.php"><img src="./img/logo.png" alt="Logo de la Marca" class="logo" style="width: 100%;"></a>
+            </div>
+            <div class="navbar-title">
+                <h3>Añadir Mesa</h3>
+            </div>
+            <div class="navbar-right" style="margin-right: 18px;">
+                <a href="./admin_panel.php"><img src="./img/atras.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+            <div class="navbar-right">
+                <a href="./salir.php"><img src="./img/logout.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+        </nav>
+    </div>
+    <div class="container crud-container">
         <form method="POST" action="añadir_mesa.php">
             <div class="mb-3">
                 <label for="numero_mesa" class="form-label text-white">Número de Mesa</label>
@@ -60,4 +77,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
-</html> 
+
+</html>

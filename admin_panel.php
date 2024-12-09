@@ -95,6 +95,7 @@ function obtenerSalas($conexion) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <br>
         <a href="añadir_usuario.php" class="btn btn-primary btn-sm mb-4">Añadir Usuario</a>
     </div>
 
@@ -127,6 +128,7 @@ function obtenerSalas($conexion) {
                 <?php endforeach; ?>
             </tbody>
         </table>
+        <br>
         <a href="añadir_sala.php" class="btn btn-primary btn-sm">Añadir Sala</a>
     </div>
 
@@ -160,6 +162,7 @@ function obtenerSalas($conexion) {
                 <?php endwhile; ?>
             </tbody>
         </table>
+        <br>
         <a href="añadir_mesa.php" class="btn btn-primary btn-sm">Añadir Mesa</a>
     </div>
 

@@ -59,6 +59,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -66,9 +67,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <title>Editar Sala</title>
 </head>
+
 <body>
-    <div class="container mt-4">
-        <h2 class="text-white">Editar Sala</h2>
+    <div class="container">
+        <nav class="navegacion">
+            <div class="navbar-left">
+                <a href="./menu.php"><img src="./img/logo.png" alt="Logo de la Marca" class="logo" style="width: 100%;"></a>
+            </div>
+            <div class="navbar-title">
+                <h3>Editar Sala</h3>
+            </div>
+            <div class="navbar-right" style="margin-right: 18px;">
+                <a href="./admin_panel.php"><img src="./img/atras.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+            <div class="navbar-right">
+                <a href="./salir.php"><img src="./img/logout.png" alt="Logout" class="navbar-icon"></a>
+            </div>
+        </nav>
+    </div>
+    <div class="container crud-container">
         <form method="POST" action="editar_sala.php?id=<?php echo $id_sala; ?>" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nombre_sala" class="form-label text-white">Nombre de Sala</label>
@@ -94,4 +111,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
-</html> 
+
+</html>
