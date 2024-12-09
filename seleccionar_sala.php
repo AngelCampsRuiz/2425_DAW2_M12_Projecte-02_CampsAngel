@@ -6,10 +6,27 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: index.php?error=sesion_no_iniciada");
     exit();
 }
-?>
-<!DOCTYPE html>
-<html lang="en">
 
+function buscarImagen($nombre) {
+    $extensiones = ['jpg', 'jpeg', 'png', 'webp'];
+    foreach ($extensiones as $ext) {
+        $ruta = "./img/" . str_replace(' ', '_', $nombre) . "." . $ext;
+        if (file_exists($ruta)) {
+            return $ruta;
+        }
+    }
+    return "./img/default.jpg"; // Imagen por defecto si no se encuentra ninguna
+}
+
+$categoria = $_GET['categoria'];
+$stmt = $conexion->prepare("SELECT * FROM tbl_salas WHERE tipo_sala = :categoria");
+$stmt->bindParam(':categoria', $categoria);
+$stmt->execute();
+$salas = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
+<!DOCTYPE html>
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -82,7 +99,7 @@ if (!isset($_SESSION['usuario'])) {
                         $sillas_libres = $stmt_sillas_libres->fetchColumn();
 
                         echo "<a class='image-container' href='./gestionar_mesas.php?categoria=" . urlencode($categoria_seleccionada) . "&id_sala=" . $id_sala . "'>
-                    <img src='./img/" . htmlspecialchars($sala['nombre_sala']) . ".jpg' alt='' id='terraza'>
+                    <img src='" . buscarImagen($sala['nombre_sala']) . "' alt='' id='terraza'>
                     <div class='text-overlay'>" . htmlspecialchars($sala['nombre_sala']) . "<br>Sillas libres: " . ($sillas_libres ?? 0) . "/" . ($total_sillas ?? 0)  . "</div>
                 </a>";
                     }

@@ -94,3 +94,7 @@ INSERT INTO tbl_reservas (id_usuario, id_mesa, fecha, hora_inicio, hora_fin) VAL
     (1, 1, '2024-11-15', '12:00:00', '14:00:00'),
     (2, 3, '2024-11-15', '18:00:00', '19:00:00'),
     (3, 5, '2024-11-15', '20:00:00', '22:00:00');
+
+-- ALTER TABLE tbl_salas
+--    ADD COLUMN tipo_sala_image VARCHAR(255) DEFAULT 'default.jpg',
+--    ADD COLUMN nombre_sala_image VARCHAR(255) DEFAULT 'default.jpg';

@@ -19,6 +19,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $tipo_sala = $_POST['tipo_sala'];
     $capacidad = $_POST['capacidad'];
 
+    // Manejo de la carga de imágenes
+    $target_dir = "./img/";
+
+    if (!empty($_FILES["tipo_sala_image"]["name"])) {
+        $tipo_sala_extension = pathinfo($_FILES["tipo_sala_image"]["name"], PATHINFO_EXTENSION);
+        $tipo_sala_image_name = str_replace(' ', '_', $tipo_sala) . "." . $tipo_sala_extension;
+        $tipo_sala_image = $target_dir . $tipo_sala_image_name;
+        if (move_uploaded_file($_FILES["tipo_sala_image"]["tmp_name"], $tipo_sala_image)) {
+            echo "Imagen de tipo de sala guardada correctamente.";
+        } else {
+            echo "Error al guardar la imagen de tipo de sala.";
+        }
+    }
+
+    if (!empty($_FILES["nombre_sala_image"]["name"])) {
+        $nombre_sala_extension = pathinfo($_FILES["nombre_sala_image"]["name"], PATHINFO_EXTENSION);
+        $nombre_sala_image_name = str_replace(' ', '_', $nombre_sala) . "." . $nombre_sala_extension;
+        $nombre_sala_image = $target_dir . $nombre_sala_image_name;
+        if (move_uploaded_file($_FILES["nombre_sala_image"]["tmp_name"], $nombre_sala_image)) {
+            echo "Imagen de nombre de sala guardada correctamente.";
+        } else {
+            echo "Error al guardar la imagen de nombre de sala.";
+        }
+    }
+
+    // Actualizar en la base de datos sin las columnas de imagen
     $stmt = $conexion->prepare("UPDATE tbl_salas SET nombre_sala = :nombre_sala, tipo_sala = :tipo_sala, capacidad = :capacidad WHERE id_sala = :id");
     $stmt->bindParam(':nombre_sala', $nombre_sala);
     $stmt->bindParam(':tipo_sala', $tipo_sala);
@@ -43,7 +69,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <body>
     <div class="container mt-4">
         <h2 class="text-white">Editar Sala</h2>
-        <form method="POST" action="editar_sala.php?id=<?php echo $id_sala; ?>">
+        <form method="POST" action="editar_sala.php?id=<?php echo $id_sala; ?>" enctype="multipart/form-data">
             <div class="mb-3">
                 <label for="nombre_sala" class="form-label text-white">Nombre de Sala</label>
                 <input type="text" class="form-control" id="nombre_sala" name="nombre_sala" value="<?php echo $sala['nombre_sala']; ?>" required>
@@ -55,6 +81,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label for="capacidad" class="form-label text-white">Capacidad</label>
                 <input type="number" class="form-control" id="capacidad" name="capacidad" value="<?php echo $sala['capacidad']; ?>" required>
+            </div>
+            <div class="mb-3">
+                <label for="tipo_sala_image" class="form-label text-white">Imagen de Tipo de Sala</label>
+                <input type="file" class="form-control" id="tipo_sala_image" name="tipo_sala_image">
+            </div>
+            <div class="mb-3">
+                <label for="nombre_sala_image" class="form-label text-white">Imagen de Nombre de Sala</label>
+                <input type="file" class="form-control" id="nombre_sala_image" name="nombre_sala_image">
             </div>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>

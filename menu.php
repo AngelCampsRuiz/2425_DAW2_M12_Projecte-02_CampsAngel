@@ -10,6 +10,7 @@ if (!isset($_SESSION['Usuario'])) {
 if (!isset($_SESSION['sweetalert_mostrado'])) {
     $_SESSION['sweetalert_mostrado'] = false;
 }
+
 try {
     $usuario = $_SESSION['usuario'];
     $query_usuario = "SELECT id_usuario FROM tbl_usuarios WHERE nombre_user = :usuario";
@@ -33,7 +34,30 @@ try {
 } catch (PDOException $e) {
     die("Error en la base de datos: " . $e->getMessage());
 }
+
+// Obtener los tipos de salas únicos
+try {
+    $query_tipos_salas = "SELECT DISTINCT tipo_sala FROM tbl_salas";
+    $stmt_tipos_salas = $conexion->prepare($query_tipos_salas);
+    $stmt_tipos_salas->execute();
+    $tipos_salas = $stmt_tipos_salas->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    die("Error en la base de datos: " . $e->getMessage());
+}
+
+// Función para buscar la imagen con cualquier extensión
+function buscarImagen($nombre) {
+    $extensiones = ['jpg', 'jpeg', 'png', 'webp'];
+    foreach ($extensiones as $ext) {
+        $ruta = "./img/" . str_replace(' ', '_', $nombre) . "." . $ext;
+        if (file_exists($ruta)) {
+            return $ruta;
+        }
+    }
+    return "./img/default.jpg"; // Imagen por defecto si no se encuentra ninguna
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -79,18 +103,12 @@ try {
     <!------------FIN BARRA DE NAVEGACION--------------------->
     <div class="container-menu">
         <section>
-            <a class="image-container" href="./seleccionar_sala?categoria=Comedor">
-                <img src="./img/Comedor 1.jpg" alt="" id="comedor">
-                <div class="text-overlay">Comedor</div>
-            </a>
-            <a class="image-container" href="./seleccionar_sala?categoria=Privada">
-                <img src="./img/Sala Privada 1.jpg" alt="" id="privada">
-                <div class="text-overlay">Sala privada</div>
-            </a>
-            <a class="image-container" href="./seleccionar_sala?categoria=Terraza">
-                <img src="./img/Terraza 1.jpg" alt="" id="terraza">
-                <div class="text-overlay">Terraza</div>
-            </a>
+            <?php foreach ($tipos_salas as $tipo_sala): ?>
+                <a class="image-container" href="./seleccionar_sala.php?categoria=<?php echo urlencode($tipo_sala['tipo_sala']); ?>">
+                    <img src="<?php echo buscarImagen($tipo_sala['tipo_sala']); ?>" alt="" id="<?php echo strtolower(str_replace(' ', '_', $tipo_sala['tipo_sala'])); ?>">
+                    <div class="text-overlay"><?php echo htmlspecialchars($tipo_sala['tipo_sala']); ?></div>
+                </a>
+            <?php endforeach; ?>
         </section>
     </div>
 
