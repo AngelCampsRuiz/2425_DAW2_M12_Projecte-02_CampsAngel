@@ -336,3 +336,35 @@ section img:hover {
         font-weight: bold;
     }
 }
+
+.form-label, h5 {
+    color: white;
+}
+.form-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+.form-container .form-control {
+    width: 150px;
+}
+.btn-primary {
+    height: 38px;
+}
+table {
+    width: 100%;
+    margin-top: 20px;
+    color: white;
+}
+th, td {
+    padding: 10px;
+    text-align: left;
+}
+th {
+    background-color: #343a40;
+}
+tr:nth-child(even) {
+    background-color: #454d55;
+}

@@ -7,6 +7,11 @@ if (!isset($_SESSION['usuario'])) {
     header("Location: index.php?error=sesion_no_iniciada");
     exit();
 }
+
+// Obtener lista de personas (usuarios) para el select
+$query_personas = "SELECT id_usuario, nombre_user FROM tbl_usuarios";
+$stmt_personas = $conexion->query($query_personas);
+$personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -62,15 +67,16 @@ if (!isset($_SESSION['usuario'])) {
                     <label for="usuario" class="text-white">Usuario:</label>
                     <select name="usuario" class="form-control form-control-sm" style="height: 40px; width: 200px;">
                         <option value="">Todos</option>
-                        <?php
-                        $query_usuarios = "SELECT id_usuario, nombre_user FROM tbl_usuarios";
-                        $stmt_usuarios = $conexion->query($query_usuarios);
-                        while ($usuario = $stmt_usuarios->fetch(PDO::FETCH_ASSOC)) {
-                            $selected = isset($_GET['usuario']) && $_GET['usuario'] == $usuario['id_usuario'] ? 'selected' : '';
-                            echo "<option value='{$usuario['id_usuario']}' $selected>{$usuario['nombre_user']}</option>";
-                        }
-                        ?>
+                        <?php foreach ($personas as $persona): ?>
+                            <option value="<?php echo $persona['id_usuario']; ?>" <?php echo (isset($_GET['usuario']) && $_GET['usuario'] == $persona['id_usuario']) ? 'selected' : ''; ?>>
+                                <?php echo $persona['nombre_user']; ?>
+                            </option>
+                        <?php endforeach; ?>
                     </select>
+                </div>
+                <div class="me-3">
+                    <label for="nombre_persona" class="text-white">Nombre de la Persona:</label>
+                    <input type="text" name="nombre_persona" class="form-control form-control-sm" style="height: 40px; width: 200px;" value="<?php echo isset($_GET['nombre_persona']) ? htmlspecialchars($_GET['nombre_persona']) : ''; ?>">
                 </div>
 
                 <div class="me-3">
@@ -113,6 +119,7 @@ if (!isset($_SESSION['usuario'])) {
         <!-- Variables para los filtros -->
         <?php
         $usuario_filter = isset($_GET['usuario']) && !empty($_GET['usuario']) ? $_GET['usuario'] : '';
+        $nombre_persona_filter = isset($_GET['nombre_persona']) && !empty($_GET['nombre_persona']) ? $_GET['nombre_persona'] : '';
         $sala_filter = isset($_GET['sala']) && !empty($_GET['sala']) ? $_GET['sala'] : '';
         $mesa_filter = isset($_GET['mesa']) && !empty($_GET['mesa']) ? $_GET['mesa'] : '';
         ?>
@@ -121,7 +128,7 @@ if (!isset($_SESSION['usuario'])) {
         <?php
         $query_historial = "
             SELECT u.nombre_user, s.nombre_sala, m.numero_mesa, 
-                   r.hora_inicio AS fecha_inicio,
+                   r.nombre_persona, r.hora_inicio AS fecha_inicio,
                    r.hora_fin AS fecha_fin,
                    TIMESTAMPDIFF(MINUTE, r.hora_inicio, r.hora_fin) AS duracion
             FROM tbl_reservas r
@@ -132,6 +139,9 @@ if (!isset($_SESSION['usuario'])) {
         $filters = [];
         if ($usuario_filter) {
             $filters[] = "u.id_usuario = :usuario";
+        }
+        if ($nombre_persona_filter) {
+            $filters[] = "r.nombre_persona LIKE :nombre_persona";
         }
         if ($sala_filter) {
             $filters[] = "s.id_sala = :sala";
@@ -149,6 +159,10 @@ if (!isset($_SESSION['usuario'])) {
         if ($usuario_filter) {
             $stmt_historial->bindParam(':usuario', $usuario_filter, PDO::PARAM_INT);
         }
+        if ($nombre_persona_filter) {
+            $nombre_persona_filter = "%$nombre_persona_filter%";
+            $stmt_historial->bindParam(':nombre_persona', $nombre_persona_filter, PDO::PARAM_STR);
+        }
         if ($sala_filter) {
             $stmt_historial->bindParam(':sala', $sala_filter, PDO::PARAM_INT);
         }
@@ -160,13 +174,14 @@ if (!isset($_SESSION['usuario'])) {
         ?>
 
         <!-- Mostrar resultados en tabla -->
-        <div class="table-responsive mt-4">
-            <table class="table table-striped">
-                <thead class="thead-dark">
+        <div>
+            <table>
+                <thead>
                     <tr>
                         <th>Usuario</th>
                         <th>Sala</th>
                         <th>Número de Mesa</th>
+                        <th>Nombre de la Persona</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
                         <th>Duración (minutos)</th>
@@ -179,6 +194,7 @@ if (!isset($_SESSION['usuario'])) {
                         <td>{$reserva['nombre_user']}</td>
                         <td>{$reserva['nombre_sala']}</td>
                         <td>{$reserva['numero_mesa']}</td>
+                        <td>{$reserva['nombre_persona']}</td>
                         <td>{$reserva['fecha_inicio']}</td>
                         <td>{$reserva['fecha_fin']}</td>
                         <td>{$reserva['duracion']}</td>

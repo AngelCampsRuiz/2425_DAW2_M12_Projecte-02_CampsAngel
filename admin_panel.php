@@ -71,8 +71,8 @@ function obtenerSalas($conexion) {
     <div class="container crud-container">
         <h2 class="text-white">Gestión de Usuarios</h2>
         <!-- Tabla de usuarios -->
-        <table class="table table-striped">
-            <thead class="thead-dark">
+        <table>
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre de Usuario</th>
@@ -101,8 +101,8 @@ function obtenerSalas($conexion) {
     <div class="container crud-container">
         <h2 class="text-white">Gestión de Recursos</h2>
         <!-- Tabla de salas -->
-        <table class="table table-striped">
-            <thead class="thead-dark">
+        <table>
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Nombre de Sala</th>
@@ -133,8 +133,8 @@ function obtenerSalas($conexion) {
     <div class="container crud-container">
         <h2 class="text-white">Gestión de Mesas</h2>
         <!-- Tabla de mesas -->
-        <table class="table table-striped">
-            <thead class="thead-dark">
+        <table>
+            <thead>
                 <tr>
                     <th>ID</th>
                     <th>Número de Mesa</th>
