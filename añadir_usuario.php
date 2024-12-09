@@ -8,19 +8,35 @@ if ($_SESSION['rol_usuario'] !== 'administrador') {
     exit();
 }
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre_user = $_POST['nombre_user'];
-    $contrasena = password_hash($_POST['contrasena'], PASSWORD_BCRYPT);
+    $contrasena = $_POST['contrasena'];
     $rol = $_POST['rol'];
 
-    $stmt = $conexion->prepare("INSERT INTO tbl_usuarios (nombre_user, contrasena, rol) VALUES (:nombre_user, :contrasena, :rol)");
+    // Verificar si el nombre de usuario ya existe
+    $stmt = $conexion->prepare("SELECT COUNT(*) FROM tbl_usuarios WHERE nombre_user = :nombre_user");
     $stmt->bindParam(':nombre_user', $nombre_user);
-    $stmt->bindParam(':contrasena', $contrasena);
-    $stmt->bindParam(':rol', $rol);
     $stmt->execute();
+    $count = $stmt->fetchColumn();
 
-    header('Location: admin_panel.php?message=Usuario añadido correctamente');
-    exit();
+    if ($count > 0) {
+        $error = "El nombre de usuario ya existe.";
+    }
+
+    // Si no hay errores, insertar el usuario
+    if (empty($error)) {
+        $contrasena = password_hash($contrasena, PASSWORD_BCRYPT);
+        $stmt = $conexion->prepare("INSERT INTO tbl_usuarios (nombre_user, contrasena, rol) VALUES (:nombre_user, :contrasena, :rol)");
+        $stmt->bindParam(':nombre_user', $nombre_user);
+        $stmt->bindParam(':contrasena', $contrasena);
+        $stmt->bindParam(':rol', $rol);
+        $stmt->execute();
+
+        header('Location: admin_panel.php?message=Usuario añadido correctamente');
+        exit();
+    }
 }
 ?>
 
@@ -54,14 +70,19 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     </div>
 
     <div class="container crud-container">
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?php echo $error; ?></div>
+        <?php endif; ?>
         <form method="POST" action="añadir_usuario.php">
             <div class="mb-3">
                 <label for="nombre_user" class="form-label text-white">Nombre de Usuario</label>
                 <input type="text" class="form-control" id="nombre_user" name="nombre_user" required>
+                <div id="nombre_user_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="contrasena" class="form-label text-white">Contraseña</label>
                 <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                <div id="contrasena_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label text-white">Rol</label>
@@ -76,5 +97,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
     </div>
 </body>
-
+<script src="./js/validacion_usuario.js"></script>
 </html>
