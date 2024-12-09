@@ -13,11 +13,6 @@ $id_usuario = $_GET['id'];
 try {
     $conexion->beginTransaction();
 
-    // Eliminar ocupaciones del usuario
-    $stmt = $conexion->prepare("DELETE FROM tbl_ocupaciones WHERE id_usuario = :id");
-    $stmt->bindParam(':id', $id_usuario);
-    $stmt->execute();
-
     // Eliminar reservas del usuario
     $stmt = $conexion->prepare("DELETE FROM tbl_reservas WHERE id_usuario = :id");
     $stmt->bindParam(':id', $id_usuario);

@@ -89,7 +89,7 @@ function obtenerSalas($conexion) {
                     <td>
                         <!-- Botones para editar y eliminar -->
                         <a href="editar_usuario.php?id=<?php echo $usuario['id_usuario']; ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="eliminar_usuario.php?id=<?php echo $usuario['id_usuario']; ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                        <button data-url="eliminar_usuario.php?id=<?php echo $usuario['id_usuario']; ?>" class="btn btn-danger btn-sm eliminar-item">Eliminar</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -121,7 +121,7 @@ function obtenerSalas($conexion) {
                     <td>
                         <!-- Botones para editar y eliminar -->
                         <a href="editar_sala.php?id=<?php echo $sala['id_sala']; ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="eliminar_sala.php?id=<?php echo $sala['id_sala']; ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                        <button data-url="eliminar_sala.php?id=<?php echo $sala['id_sala']; ?>" class="btn btn-danger btn-sm eliminar-item">Eliminar</button>
                     </td>
                 </tr>
                 <?php endforeach; ?>
@@ -154,7 +154,7 @@ function obtenerSalas($conexion) {
                     <td><?php echo $mesa['numero_sillas']; ?></td>
                     <td>
                         <a href="editar_mesa.php?id=<?php echo $mesa['id_mesa']; ?>" class="btn btn-warning btn-sm">Editar</a>
-                        <a href="eliminar_mesa.php?id=<?php echo $mesa['id_mesa']; ?>" class="btn btn-danger btn-sm">Eliminar</a>
+                        <button data-url="eliminar_mesa.php?id=<?php echo $mesa['id_mesa']; ?>" class="btn btn-danger btn-sm eliminar-item">Eliminar</button>
                     </td>
                 </tr>
                 <?php endwhile; ?>
@@ -165,6 +165,29 @@ function obtenerSalas($conexion) {
 
     <script src="./js/sweetalert.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            document.querySelectorAll('.eliminar-item').forEach(button => {
+                button.addEventListener('click', function() {
+                    const url = this.getAttribute('data-url');
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "Esta acción no se puede deshacer.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, eliminar',
+                        cancelButtonText: 'No, cancelar'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = url;
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 
 </html>

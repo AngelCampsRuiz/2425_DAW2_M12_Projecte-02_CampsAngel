@@ -13,8 +13,8 @@ $id_mesa = $_GET['id'];
 try {
     $conexion->beginTransaction();
 
-    // Eliminar ocupaciones o reservas de la mesa
-    $stmt = $conexion->prepare("DELETE FROM tbl_ocupaciones WHERE id_mesa = :id");
+    // Eliminar reservas de la mesa
+    $stmt = $conexion->prepare("DELETE FROM tbl_reservas WHERE id_mesa = :id");
     $stmt->bindParam(':id', $id_mesa);
     $stmt->execute();
 
