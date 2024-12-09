@@ -39,6 +39,8 @@ try {
 
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         if (isset($_POST['reservar'])) {
+            $nombre_persona = $_POST['nombre_persona'];
+            $fecha_reserva = $_POST['fecha_reserva'];
             $hora_inicio = $_POST['hora_inicio'];
             $hora_fin = $_POST['hora_fin'];
 
@@ -46,12 +48,14 @@ try {
                 throw new Exception("La hora de fin debe ser al menos una hora después de la hora de inicio.");
             }
 
-            $query_reserva = "INSERT INTO tbl_reservas (id_mesa, id_usuario, hora_inicio, hora_fin, fecha) VALUES (:mesa_id, :id_usuario, :hora_inicio, :hora_fin, CURDATE())";
+            $query_reserva = "INSERT INTO tbl_reservas (id_mesa, id_usuario, nombre_persona, hora_inicio, hora_fin, fecha) VALUES (:mesa_id, :id_usuario, :nombre_persona, :hora_inicio, :hora_fin, :fecha)";
             $stmt_reserva = $conexion->prepare($query_reserva);
             $stmt_reserva->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
             $stmt_reserva->bindParam(':id_usuario', $id_usuario, PDO::PARAM_INT);
+            $stmt_reserva->bindParam(':nombre_persona', $nombre_persona, PDO::PARAM_STR);
             $stmt_reserva->bindParam(':hora_inicio', $hora_inicio, PDO::PARAM_STR);
             $stmt_reserva->bindParam(':hora_fin', $hora_fin, PDO::PARAM_STR);
+            $stmt_reserva->bindParam(':fecha', $fecha_reserva, PDO::PARAM_STR);
             $stmt_reserva->execute();
 
             $_SESSION['mensaje'] = "Reserva realizada con éxito.";
@@ -59,7 +63,7 @@ try {
             exit();
         }
 
-        if (isset($_POST['cancelar_reserva'])) {
+        if (isset($_POST['reserva_id'])) {
             $reserva_id = $_POST['reserva_id'];
 
             $query_eliminar = "DELETE FROM tbl_reservas WHERE id_reserva = :reserva_id AND id_usuario = :id_usuario";
@@ -82,10 +86,21 @@ if (isset($_SESSION['mensaje'])) {
     $mensaje = $_SESSION['mensaje'];
     unset($_SESSION['mensaje']);
 }
+
+// Obtener reservas actuales para la mesa
+$query_reservas = "SELECT r.id_reserva, r.hora_inicio, r.hora_fin, r.fecha, r.nombre_persona, u.nombre_user, m.numero_mesa 
+                   FROM tbl_reservas r
+                   JOIN tbl_usuarios u ON r.id_usuario = u.id_usuario
+                   JOIN tbl_mesas m ON r.id_mesa = m.id_mesa
+                   WHERE r.id_mesa = :mesa_id AND r.fecha >= CURDATE()";
+$stmt_reservas = $conexion->prepare($query_reservas);
+$stmt_reservas->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
+$stmt_reservas->execute();
+$reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -98,15 +113,15 @@ if (isset($_SESSION['mensaje'])) {
         .form-label, h5 {
             color: white;
         }
-        .hora-container {
+        .form-container {
             display: flex;
-            justify-content: center;
+            justify-content: space-between;
             align-items: center;
             gap: 10px;
             margin-top: 20px;
         }
-        .hora-container .form-control {
-            width: 100px;
+        .form-container .form-control {
+            width: 150px;
         }
         .btn-primary {
             height: 38px;
@@ -152,7 +167,15 @@ if (isset($_SESSION['mensaje'])) {
 
         <div class='reserva-container'>
             <form method='POST' action='reservar_mesa.php?mesa_id=<?php echo $mesa_id; ?>&categoria=<?php echo $categoria_seleccionada; ?>&id_sala=<?php echo $id_sala; ?>'>
-                <div class='hora-container'>
+                <div class='form-container'>
+                    <div class='mb-3'>
+                        <label for='nombre_persona' class='form-label'>Nombre de la Persona:</label>
+                        <input type='text' class='form-control' name='nombre_persona' id='nombre_persona' required>
+                    </div>
+                    <div class='mb-3'>
+                        <label for='fecha_reserva' class='form-label'>Fecha de Reserva:</label>
+                        <input type='date' class='form-control' name='fecha_reserva' id='fecha_reserva' required>
+                    </div>
                     <div class='mb-3'>
                         <label for='hora_inicio' class='form-label'>Hora de inicio:</label>
                         <select class='form-control' name='hora_inicio' id='hora_inicio' required>
@@ -176,7 +199,9 @@ if (isset($_SESSION['mensaje'])) {
                 <thead>
                     <tr>
                         <th>Usuario</th>
+                        <th>Nombre</th>
                         <th>Mesa</th>
+                        <th>Fecha</th>
                         <th>Hora de Inicio</th>
                         <th>Hora de Fin</th>
                         <th>Acciones</th>
@@ -184,27 +209,18 @@ if (isset($_SESSION['mensaje'])) {
                 </thead>
                 <tbody>
                     <?php
-                    // Obtener reservas actuales para la mesa
-                    $query_reservas = "SELECT r.id_reserva, r.hora_inicio, r.hora_fin, u.nombre_user, m.numero_mesa 
-                                       FROM tbl_reservas r
-                                       JOIN tbl_usuarios u ON r.id_usuario = u.id_usuario
-                                       JOIN tbl_mesas m ON r.id_mesa = m.id_mesa
-                                       WHERE r.id_mesa = :mesa_id AND r.fecha = CURDATE()";
-                    $stmt_reservas = $conexion->prepare($query_reservas);
-                    $stmt_reservas->bindParam(':mesa_id', $mesa_id, PDO::PARAM_INT);
-                    $stmt_reservas->execute();
-                    $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
-
                     foreach ($reservas as $reserva) {
                         echo "<tr>
                                 <td>{$reserva['nombre_user']}</td>
+                                <td>{$reserva['nombre_persona']}</td>
                                 <td>{$reserva['numero_mesa']}</td>
+                                <td>{$reserva['fecha']}</td>
                                 <td>{$reserva['hora_inicio']}</td>
                                 <td>{$reserva['hora_fin']}</td>
                                 <td>
                                     <form method='POST' style='display:inline;' action='reservar_mesa.php?mesa_id=$mesa_id&categoria=$categoria_seleccionada&id_sala=$id_sala'>
                                         <input type='hidden' name='reserva_id' value='{$reserva['id_reserva']}'>
-                                        <button type='submit' name='cancelar_reserva' class='btn btn-danger btn-sm'>Eliminar</button>
+                                        <button type='button' class='btn btn-danger btn-sm cancelar-reserva'>Cancelar</button>
                                     </form>
                                 </td>
                               </tr>";
@@ -214,34 +230,36 @@ if (isset($_SESSION['mensaje'])) {
             </table>
         </div>
     </div>
+    <div id="reservas-data" style="display: none;"><?php echo json_encode($reservas); ?></div>
+    <div id="mensaje-data" style="display: none;"><?php echo htmlspecialchars($mensaje); ?></div>
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="./js/validacion_reservas.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const horaInicioInput = document.getElementById('hora_inicio');
-            const horaFinInput = document.getElementById('hora_fin');
-
-            horaInicioInput.addEventListener('change', function() {
-                const horaInicio = new Date(`1970-01-01T${horaInicioInput.value}:00`);
-                const horaMaxFin = new Date(horaInicio.getTime() + 60 * 60 * 1000); // 1 hora después
-
-                const horaMaxFinStr = horaMaxFin.toTimeString().slice(0, 5);
-                horaFinInput.min = horaInicioInput.value;
-                horaFinInput.value = horaMaxFinStr;
-            });
-
-            const mensaje = "<?php echo $mensaje; ?>";
-            if (mensaje) {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Éxito',
-                    text: mensaje,
-                    confirmButtonText: 'Aceptar'
+            // Confirmación al cancelar una reserva
+            document.querySelectorAll('.cancelar-reserva').forEach(button => {
+                button.addEventListener('click', function(event) {
+                    const form = this.closest('form');
+                    Swal.fire({
+                        title: '¿Estás seguro?',
+                        text: "Esta acción no se puede deshacer.",
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#3085d6',
+                        cancelButtonColor: '#d33',
+                        confirmButtonText: 'Sí, cancelar',
+                        cancelButtonText: 'No, mantener'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Enviar el formulario si se confirma
+                        }
+                    });
                 });
-            }
+            });
         });
     </script>
 </body>
-
 </html>

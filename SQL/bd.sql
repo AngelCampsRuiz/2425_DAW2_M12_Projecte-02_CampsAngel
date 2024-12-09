@@ -98,3 +98,5 @@ INSERT INTO tbl_reservas (id_usuario, id_mesa, fecha, hora_inicio, hora_fin) VAL
 -- ALTER TABLE tbl_salas
 --    ADD COLUMN tipo_sala_image VARCHAR(255) DEFAULT 'default.jpg',
 --    ADD COLUMN nombre_sala_image VARCHAR(255) DEFAULT 'default.jpg';
+ALTER TABLE tbl_reservas
+ADD COLUMN nombre_persona VARCHAR(255) AFTER id_usuario;
