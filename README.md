@@ -11,9 +11,11 @@
 
 ### 📝 Descripción del Proyecto
 Este proyecto es una aplicación web desarrollada como parte del módulo transversal PJ 02 en el curso de **Desenvolupament d’Aplicacions Web (DAW)**. La aplicación permite a los camareros de un restaurante gestionar la disponibilidad de mesas con reservas para una fecha concreta. Además, el administrador de la web tiene la posibilidad de controlar varios CRUDs para el desarrollo.
+
 ---
 
 ### 🚀 Funcionalidades Principales
+
 - **Visualización de Disponibilidad de Mesas y Salas:** Los camareros pueden ver la disponibilidad en tiempo real de mesas y sillas, junto con la capacidad de cada sala del restaurante.
 - **Gestión de Reserva de Mesas:** Los camareros pueden reservar una mesa para una fecha y para una hora concreta. Se puede ver qué días y horas están reservadas para cada mesa.
 - **Login de Usuarios:** El sistema requiere que los usuarios se identifiquen antes de gestionar la ocupación de mesas. El único usuario con más funcionalidades es el administrador de la web.
