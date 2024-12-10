@@ -110,6 +110,28 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <style>
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .form-container {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                gap: 15px;
+            }
+
+            .form-container .mb-3 {
+                width: 100%;
+            }
+
+            .reserva-container table {
+                width: 100%;
+                font-size: 12px;
+            }
+
+            .reserva-container table th, .reserva-container table td {
+                padding: 3px;
+                text-align: left;
+            }
+        }
     </style>
 </head>
 

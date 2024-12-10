@@ -34,10 +34,26 @@ function obtenerSalas($conexion) {
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10"></script>
     <title>Panel de Administración</title>
     <style>
-        .crud-container {
-            margin-top: 0 !important; /* Elimina el margen superior */
-            padding-top: 0 !important; /* Elimina el relleno superior si es necesario */
-            margin-bottom: 0 !important; /* Elimina el margen inferior */
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                font-size: 12px; /* Reducir tamaño de fuente */
+            }
+
+            table th, table td {
+                padding: 4px; /* Reducir padding */
+                text-align: left;
+            }
+
+            .btn {
+                display: block;
+                width: 100%;
+                margin-bottom: 5px; /* Espacio entre botones */
+                font-size: 10px; /* Reducir tamaño de fuente de los botones */
+                padding: 4px; /* Reducir padding de los botones */
+            }
         }
     </style>
 </head>
