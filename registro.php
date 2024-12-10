@@ -109,6 +109,11 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
                     </select>
                 </div>
 
+                <div class="me-3">
+                    <label for="fecha" class="text-white">Fecha:</label>
+                    <input type="date" name="fecha" class="form-control form-control-sm" style="height: 40px; width: 200px;" value="<?php echo isset($_GET['fecha']) ? htmlspecialchars($_GET['fecha']) : ''; ?>">
+                </div>
+
                 <div class="d-flex align-items-center mt-3">
                     <button type="submit" class="btn btn-primary btn-sm me-2" style="height: 40px; width: 200px; margin-top: 10px; margin-right: 10px; margin-bottom: 2px;">Filtrar</button>
                     <button type="button" class="btn btn-secondary btn-sm" onclick="window.location.href='registro.php'" style="height: 40px; width: 200px; margin-top: 10px; margin-left: 7px;">Borrar Filtros</button>
@@ -122,13 +127,12 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
         $nombre_persona_filter = isset($_GET['nombre_persona']) && !empty($_GET['nombre_persona']) ? $_GET['nombre_persona'] : '';
         $sala_filter = isset($_GET['sala']) && !empty($_GET['sala']) ? $_GET['sala'] : '';
         $mesa_filter = isset($_GET['mesa']) && !empty($_GET['mesa']) ? $_GET['mesa'] : '';
-        ?>
+        $fecha_filter = isset($_GET['fecha']) && !empty($_GET['fecha']) ? $_GET['fecha'] : '';
 
-        <!-- Consulta SQL para obtener el historial de reservas -->
-        <?php
+        // Consulta SQL para obtener el historial de reservas
         $query_historial = "
             SELECT u.nombre_user, s.nombre_sala, m.numero_mesa, 
-                   r.nombre_persona, r.hora_inicio AS fecha_inicio,
+                   r.nombre_persona, r.fecha, r.hora_inicio AS fecha_inicio,
                    r.hora_fin AS fecha_fin,
                    TIMESTAMPDIFF(MINUTE, r.hora_inicio, r.hora_fin) AS duracion
             FROM tbl_reservas r
@@ -148,6 +152,9 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
         }
         if ($mesa_filter) {
             $filters[] = "m.id_mesa = :mesa";
+        }
+        if ($fecha_filter) {
+            $filters[] = "r.fecha = :fecha";
         }
 
         if (!empty($filters)) {
@@ -169,6 +176,9 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
         if ($mesa_filter) {
             $stmt_historial->bindParam(':mesa', $mesa_filter, PDO::PARAM_INT);
         }
+        if ($fecha_filter) {
+            $stmt_historial->bindParam(':fecha', $fecha_filter, PDO::PARAM_STR);
+        }
 
         $stmt_historial->execute();
         ?>
@@ -182,6 +192,7 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
                         <th>Sala</th>
                         <th>Número de Mesa</th>
                         <th>Nombre de la Persona</th>
+                        <th>Fecha</th>
                         <th>Fecha Inicio</th>
                         <th>Fecha Fin</th>
                         <th>Duración (minutos)</th>
@@ -195,6 +206,7 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
                         <td>{$reserva['nombre_sala']}</td>
                         <td>{$reserva['numero_mesa']}</td>
                         <td>{$reserva['nombre_persona']}</td>
+                        <td>{$reserva['fecha']}</td>
                         <td>{$reserva['fecha_inicio']}</td>
                         <td>{$reserva['fecha_fin']}</td>
                         <td>{$reserva['duracion']}</td>

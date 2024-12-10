@@ -14,20 +14,36 @@ $stmt->bindParam(':id', $id_mesa);
 $stmt->execute();
 $mesa = $stmt->fetch(PDO::FETCH_ASSOC);
 
+$error = '';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $numero_mesa = $_POST['numero_mesa'];
     $id_sala = $_POST['id_sala'];
     $numero_sillas = $_POST['numero_sillas'];
 
-    $stmt = $conexion->prepare("UPDATE tbl_mesas SET numero_mesa = :numero_mesa, id_sala = :id_sala, numero_sillas = :numero_sillas WHERE id_mesa = :id");
+    // Verificar si el número de mesa ya existe para otra mesa
+    $stmt = $conexion->prepare("SELECT COUNT(*) FROM tbl_mesas WHERE numero_mesa = :numero_mesa AND id_mesa != :id");
     $stmt->bindParam(':numero_mesa', $numero_mesa);
-    $stmt->bindParam(':id_sala', $id_sala);
-    $stmt->bindParam(':numero_sillas', $numero_sillas);
     $stmt->bindParam(':id', $id_mesa);
     $stmt->execute();
+    $count = $stmt->fetchColumn();
 
-    header('Location: admin_panel.php?message=Mesa editada correctamente');
-    exit();
+    if ($count > 0) {
+        $error = "El número de mesa ya existe.";
+    }
+
+    // Si no hay errores, actualizar la mesa
+    if (empty($error)) {
+        $stmt = $conexion->prepare("UPDATE tbl_mesas SET numero_mesa = :numero_mesa, id_sala = :id_sala, numero_sillas = :numero_sillas WHERE id_mesa = :id");
+        $stmt->bindParam(':numero_mesa', $numero_mesa);
+        $stmt->bindParam(':id_sala', $id_sala);
+        $stmt->bindParam(':numero_sillas', $numero_sillas);
+        $stmt->bindParam(':id', $id_mesa);
+        $stmt->execute();
+
+        header('Location: admin_panel.php?message=Mesa editada correctamente');
+        exit();
+    }
 }
 ?>
 
@@ -60,10 +76,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </nav>
     </div>
     <div class="container crud-container">
+        <?php if (!empty($error)): ?>
+            <div class="alert alert-danger"><?php echo $error; ?></div>
+        <?php endif; ?>
         <form method="POST" action="editar_mesa.php?id=<?php echo $id_mesa; ?>">
             <div class="mb-3">
                 <label for="numero_mesa" class="form-label text-white">Número de Mesa</label>
                 <input type="number" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo $mesa['numero_mesa']; ?>" required>
+                <div id="numero_mesa_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="id_sala" class="form-label text-white">Sala</label>
@@ -80,10 +100,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <div class="mb-3">
                 <label for="numero_sillas" class="form-label text-white">Número de Sillas</label>
                 <input type="number" class="form-control" id="numero_sillas" name="numero_sillas" value="<?php echo $mesa['numero_sillas']; ?>" required>
+                <div id="numero_sillas_error" class="error-message" style="color: red;"></div>
             </div>
             <button type="submit" class="btn btn-primary">Guardar Cambios</button>
         </form>
     </div>
 </body>
-
+<script src="./js/validacion_mesa.js"></script>
 </html>

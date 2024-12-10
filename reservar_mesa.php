@@ -230,5 +230,10 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
             });
         });
     </script>
+    <script>
+        document.getElementById('fecha_reserva').addEventListener('keydown', function(event) {
+            event.preventDefault(); // Evita que el usuario escriba en el campo
+        });
+    </script>
 </body>
 </html>

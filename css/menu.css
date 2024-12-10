@@ -348,10 +348,15 @@ section img:hover {
     margin-top: 20px;
 }
 .form-container .form-control {
+    height: 30px;
     width: 150px;
+    font-size: 15px;
 }
-.btn-primary {
-    height: 38px;
+.btn-primary, .btn-secondary {
+    height: 30px;
+    width: 150px;
+    font-size: 15px;
+    padding: 5px 10px;
 }
 table {
     width: 100%;
@@ -367,4 +372,17 @@ th {
 }
 tr:nth-child(even) {
     background-color: #454d55;
+}
+
+form .form-control {
+    height: 40px !important;
+    width: 150px !important;
+    font-size: 15px;
+}
+
+form .btn-primary, form .btn-secondary {
+    height: 40px !important;
+    width: 150px !important;
+    font-size: 15px;
+    padding: 5px 10px;
 }
