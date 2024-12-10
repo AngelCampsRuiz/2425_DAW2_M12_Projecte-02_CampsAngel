@@ -37,10 +37,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         // Manejo de la carga de imágenes
         $target_dir = "./img/";
 
+        // Verificar y eliminar la imagen existente de tipo de sala
         if (!empty($_FILES["tipo_sala_image"]["name"])) {
             $tipo_sala_extension = pathinfo($_FILES["tipo_sala_image"]["name"], PATHINFO_EXTENSION);
             $tipo_sala_image_name = str_replace(' ', '_', $tipo_sala) . "." . $tipo_sala_extension;
             $tipo_sala_image = $target_dir . $tipo_sala_image_name;
+
+            if (file_exists($tipo_sala_image)) {
+                unlink($tipo_sala_image); // Eliminar la imagen existente
+            }
+
             if (move_uploaded_file($_FILES["tipo_sala_image"]["tmp_name"], $tipo_sala_image)) {
                 echo "Imagen de tipo de sala guardada correctamente.";
             } else {
@@ -48,10 +54,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             }
         }
 
+        // Verificar y eliminar la imagen existente de nombre de sala
         if (!empty($_FILES["nombre_sala_image"]["name"])) {
             $nombre_sala_extension = pathinfo($_FILES["nombre_sala_image"]["name"], PATHINFO_EXTENSION);
             $nombre_sala_image_name = str_replace(' ', '_', $nombre_sala) . "." . $nombre_sala_extension;
             $nombre_sala_image = $target_dir . $nombre_sala_image_name;
+
+            if (file_exists($nombre_sala_image)) {
+                unlink($nombre_sala_image); // Eliminar la imagen existente
+            }
+
             if (move_uploaded_file($_FILES["nombre_sala_image"]["tmp_name"], $nombre_sala_image)) {
                 echo "Imagen de nombre de sala guardada correctamente.";
             } else {
