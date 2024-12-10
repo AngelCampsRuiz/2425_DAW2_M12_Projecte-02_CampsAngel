@@ -386,3 +386,71 @@ form .btn-primary, form .btn-secondary {
     font-size: 15px;
     padding: 5px 10px;
 }
+
+.input-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+    margin-top: 20px;
+}
+
+.input-group .form-control {
+    height: 30px;
+    width: 150px;
+    font-size: 15px;
+}
+
+.input-group .btn {
+    height: 30px;
+    width: 150px;
+    font-size: 15px;
+    padding: 5px 10px;
+}
+
+@media (max-width: 768px) {
+    .input-group {
+        display: block !important;
+    }
+
+    .input-group .form-control,
+    .input-group .btn {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}
+
+.flex-form {
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    gap: 20px !important;
+    margin-top: 0 !important;
+    width: 100% !important;
+}
+
+.flex-form .custom-input {
+    height: 40px !important;
+    width: 250px !important;
+    font-size: 16px !important;
+}
+
+.flex-form .custom-btn {
+    height: 40px !important;
+    width: 120px !important;
+    font-size: 16px !important;
+    padding: 0 !important;
+    margin-top: 15px !important;
+}
+
+@media (max-width: 768px) {
+    .flex-form {
+        display: block !important;
+    }
+
+    .flex-form .custom-input,
+    .flex-form .custom-btn {
+        width: 100% !important;
+        margin-bottom: 10px !important;
+    }
+}

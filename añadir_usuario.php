@@ -73,27 +73,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
-        <form method="POST" action="añadir_usuario.php">
+        <form method="POST" action="añadir_usuario.php" class="flex-form">
             <div class="mb-3">
                 <label for="nombre_user" class="form-label text-white">Nombre de Usuario</label>
-                <input type="text" class="form-control" id="nombre_user" name="nombre_user" required>
+                <input type="text" class="form-control custom-input" id="nombre_user" name="nombre_user" required>
                 <div id="nombre_user_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="contrasena" class="form-label text-white">Contraseña</label>
-                <input type="password" class="form-control" id="contrasena" name="contrasena" required>
+                <input type="password" class="form-control custom-input" id="contrasena" name="contrasena" required>
                 <div id="contrasena_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label text-white">Rol</label>
-                <select class="form-control" id="rol" name="rol" required>
+                <select class="form-control custom-input" id="rol" name="rol" required>
                     <option value="camarero">Camarero</option>
                     <option value="gerente">Gerente</option>
                     <option value="mantenimiento">Mantenimiento</option>
                     <option value="administrador">Administrador</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Añadir</button>
+            <button type="submit" class="btn btn-primary custom-btn">Añadir</button>
         </form>
     </div>
 </body>

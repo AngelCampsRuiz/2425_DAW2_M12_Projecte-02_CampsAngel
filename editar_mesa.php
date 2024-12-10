@@ -79,15 +79,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
-        <form method="POST" action="editar_mesa.php?id=<?php echo $id_mesa; ?>">
+        <form method="POST" action="editar_mesa.php?id=<?php echo $id_mesa; ?>" class="flex-form">
             <div class="mb-3">
                 <label for="numero_mesa" class="form-label text-white">Número de Mesa</label>
-                <input type="number" class="form-control" id="numero_mesa" name="numero_mesa" value="<?php echo $mesa['numero_mesa']; ?>" required>
+                <input type="number" class="form-control custom-input" id="numero_mesa" name="numero_mesa" value="<?php echo $mesa['numero_mesa']; ?>" required>
                 <div id="numero_mesa_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="id_sala" class="form-label text-white">Sala</label>
-                <select class="form-control" id="id_sala" name="id_sala" required>
+                <select class="form-control custom-input" id="id_sala" name="id_sala" required>
                     <?php
                     $stmt = $conexion->query("SELECT id_sala, nombre_sala FROM tbl_salas");
                     while ($sala = $stmt->fetch(PDO::FETCH_ASSOC)) {
@@ -99,12 +99,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </div>
             <div class="mb-3">
                 <label for="numero_sillas" class="form-label text-white">Número de Sillas</label>
-                <input type="number" class="form-control" id="numero_sillas" name="numero_sillas" value="<?php echo $mesa['numero_sillas']; ?>" required>
+                <input type="number" class="form-control custom-input" id="numero_sillas" name="numero_sillas" value="<?php echo $mesa['numero_sillas']; ?>" required>
                 <div id="numero_sillas_error" class="error-message" style="color: red;"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="submit" class="btn btn-primary custom-btn">Guardar</button>
         </form>
     </div>
+    <script src="./js/validacion_mesa.js"></script>
 </body>
-<script src="./js/validacion_mesa.js"></script>
+
 </html>

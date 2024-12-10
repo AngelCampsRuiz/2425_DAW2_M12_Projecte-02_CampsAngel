@@ -99,33 +99,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
-        <form method="POST" action="añadir_sala.php" enctype="multipart/form-data">
+        <form method="POST" action="añadir_sala.php" enctype="multipart/form-data" class="flex-form">
             <div class="mb-3">
                 <label for="nombre_sala" class="form-label text-white">Nombre de Sala</label>
-                <input type="text" class="form-control" id="nombre_sala" name="nombre_sala" required>
+                <input type="text" class="form-control small-input" id="nombre_sala" name="nombre_sala" required>
                 <div id="nombre_sala_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="nombre_sala_image" class="form-label text-white">Imagen de Nombre de Sala</label>
-                <input type="file" class="form-control" id="nombre_sala_image" name="nombre_sala_image" required>
+                <input type="file" class="form-control small-input" id="nombre_sala_image" name="nombre_sala_image" required>
             </div>
             <div class="mb-3">
                 <label for="tipo_sala" class="form-label text-white">Tipo de Sala</label>
-                <input type="text" class="form-control" id="tipo_sala" name="tipo_sala" required>
+                <input type="text" class="form-control small-input" id="tipo_sala" name="tipo_sala" required>
                 <div id="tipo_sala_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="tipo_sala_image" class="form-label text-white">Imagen de Tipo de Sala</label>
-                <input type="file" class="form-control" id="tipo_sala_image" name="tipo_sala_image" required>
+                <input type="file" class="form-control small-input" id="tipo_sala_image" name="tipo_sala_image" required>
             </div>
             <div class="mb-3">
                 <label for="capacidad" class="form-label text-white">Capacidad</label>
-                <input type="number" class="form-control" id="capacidad" name="capacidad" required>
+                <input type="number" class="form-control small-input" id="capacidad" name="capacidad" required>
                 <div id="capacidad_error" class="error-message" style="color: red;"></div>
             </div>
-            <button type="submit" class="btn btn-primary">Añadir</button>
+            <button type="submit" class="btn btn-primary custom-btn">Añadir</button>
         </form>
     </div>
+    <script src="./js/validacion_sala.js"></script>
 </body>
-<script src="./js/validacion_sala.js"></script>
+
 </html>

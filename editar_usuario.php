@@ -77,22 +77,22 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <?php if (!empty($error)): ?>
             <div class="alert alert-danger"><?php echo $error; ?></div>
         <?php endif; ?>
-        <form method="POST" action="editar_usuario.php?id=<?php echo $id_usuario; ?>">
+        <form method="POST" action="editar_usuario.php?id=<?php echo $id_usuario; ?>" class="flex-form">
             <div class="mb-3">
                 <label for="nombre_user" class="form-label text-white">Nombre de Usuario</label>
-                <input type="text" class="form-control" id="nombre_user" name="nombre_user" value="<?php echo $usuario['nombre_user']; ?>" required>
+                <input type="text" class="form-control custom-input" id="nombre_user" name="nombre_user" value="<?php echo $usuario['nombre_user']; ?>" required>
                 <div id="nombre_user_error" class="error-message" style="color: red;"></div>
             </div>
             <div class="mb-3">
                 <label for="rol" class="form-label text-white">Rol</label>
-                <select class="form-control" id="rol" name="rol" required>
+                <select class="form-control custom-input" id="rol" name="rol" required>
                     <option value="camarero" <?php echo $usuario['rol'] == 'camarero' ? 'selected' : ''; ?>>Camarero</option>
                     <option value="gerente" <?php echo $usuario['rol'] == 'gerente' ? 'selected' : ''; ?>>Gerente</option>
                     <option value="mantenimiento" <?php echo $usuario['rol'] == 'mantenimiento' ? 'selected' : ''; ?>>Mantenimiento</option>
                     <option value="administrador" <?php echo $usuario['rol'] == 'administrador' ? 'selected' : ''; ?>>Administrador</option>
                 </select>
             </div>
-            <button type="submit" class="btn btn-primary">Guardar Cambios</button>
+            <button type="submit" class="btn btn-primary custom-btn">Guardar</button>
         </form>
     </div>
     <script src="./js/validacion_usuario.js"></script>
