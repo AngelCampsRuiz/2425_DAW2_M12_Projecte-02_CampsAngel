@@ -170,7 +170,7 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
                     <div class='mb-3'>
                         <label for='hora_inicio' class='form-label'>Hora de inicio:</label>
                         <select class='form-control' name='hora_inicio' id='hora_inicio' required>
-                            <?php for ($i = 0; $i < 24; $i++): ?>
+                            <?php for ($i = 12; $i < 24; $i++): ?>
                                 <option value="<?php echo str_pad($i, 2, '0', STR_PAD_LEFT) . ':00'; ?>">
                                     <?php echo str_pad($i, 2, '0', STR_PAD_LEFT) . ':00'; ?>
                                 </option>
@@ -181,7 +181,7 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
                         <label for='hora_fin' class='form-label'>Hora de fin:</label>
                         <input type='time' class='form-control' name='hora_fin' id='hora_fin' required readonly>
                     </div>
-                    <button type='submit' name='reservar' class='btn btn-primary'>Reservar</button>
+                    <button type='submit' name='reservar' class='btn btn-primary' id='reservar-btn' disabled>Reservar</button>
                 </div>
             </form>
             <hr>
@@ -230,6 +230,37 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
     <script src="./js/validacion_reservas.js"></script>
     <script>
         document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('#nombre_persona, #fecha_reserva, #hora_inicio');
+            const horaFinInput = document.getElementById('hora_fin');
+            const reservarBtn = document.getElementById('reservar-btn');
+
+            function checkInputs() {
+                let allFilled = true;
+                inputs.forEach(input => {
+                    if (!input.value) {
+                        allFilled = false;
+                    }
+                });
+                if (!horaFinInput.value) {
+                    allFilled = false;
+                }
+                reservarBtn.disabled = !allFilled;
+            }
+
+            inputs.forEach(input => {
+                input.addEventListener('input', checkInputs);
+            });
+
+            horaFinInput.addEventListener('input', checkInputs);
+
+            // Simular el cambio en hora_fin para activar la validación
+            document.getElementById('hora_inicio').addEventListener('change', function() {
+                const horaInicio = this.value;
+                const horaFin = parseInt(horaInicio.split(':')[0]) + 1;
+                horaFinInput.value = (horaFin < 10 ? '0' : '') + horaFin + ':00';
+                checkInputs();
+            });
+
             // Confirmación al cancelar una reserva
             document.querySelectorAll('.cancelar-reserva').forEach(button => {
                 button.addEventListener('click', function(event) {
