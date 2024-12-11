@@ -116,7 +116,7 @@ function obtenerSalas($conexion) {
     </div>
 
     <div class="container crud-container">
-        <h2 class="text-white">Gestión de Recursos</h2>
+        <h2 class="text-white">Gestión de Salas</h2>
         <!-- Tabla de salas -->
         <table>
             <thead>
