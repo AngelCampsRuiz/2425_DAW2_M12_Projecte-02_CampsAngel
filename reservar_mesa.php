@@ -112,24 +112,48 @@ $reservas = $stmt_reservas->fetchAll(PDO::FETCH_ASSOC);
     <style>
         /* Estilos para dispositivos móviles */
         @media (max-width: 768px) {
+            .reserva-container table {
+                width: 100%;
+                font-size: 9px; /* Mantiene el tamaño de la fuente reducido */
+                table-layout: fixed; /* Asegura que la tabla no exceda el ancho de la pantalla */
+            }
+
+            .reserva-container table, th, td {
+                padding: 2px; /* Mantiene el padding reducido */
+                border-collapse: collapse; /* Asegura que las celdas estén más juntas */
+                word-wrap: break-word; /* Asegura que el texto no desborde */
+            }
+
+            th, td {
+                text-align: left; /* Alinea el texto a la izquierda */
+                overflow: hidden; /* Oculta cualquier contenido que desborde la celda */
+                text-overflow: ellipsis; /* Añade puntos suspensivos si el texto es demasiado largo */
+                min-width: 50px; /* Establece un mínimo de ancho para cada celda */
+                max-width: 100px; /* Establece un máximo de ancho para cada celda */
+            }
+
+            /* Ajusta el ancho de cada columna más precisamente */
+            th:nth-child(1), td:nth-child(1) { width: 1%; } /* Usuario */
+            th:nth-child(2), td:nth-child(2) { width: 1%; } /* Nombre */
+            th:nth-child(3), td:nth-child(3) { width: 1%; } /* Mesa */
+            th:nth-child(4), td:nth-child(4) { width: 1%; } /* Fecha */
+            th:nth-child(5), td:nth-child(5) { width: 1%; } /* Hora de Inicio */
+            th:nth-child(6), td:nth-child(6) { width: 1%; } /* Hora de Fin */
+            th:nth-child(7), td:nth-child(7) { width: 1%; } /* Acciones */
+
             .form-container {
                 display: grid;
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
+                grid-template-columns: repeat(2, 1fr); /* Dos columnas de igual ancho */
+                gap: 10px; /* Espacio entre los inputs */
             }
 
             .form-container .mb-3 {
-                width: 100%;
+                width: 100%; /* Ajusta el ancho de los controles de formulario */
             }
 
-            .reserva-container table {
-                width: 100%;
-                font-size: 12px;
-            }
-
-            .reserva-container table th, .reserva-container table td {
-                padding: 3px;
-                text-align: left;
+            .form-container .btn {
+                grid-column: span 2; /* El botón ocupa las dos columnas */
+                width: 100%; /* Ajusta los botones para que ocupen todo el ancho */
             }
         }
     </style>

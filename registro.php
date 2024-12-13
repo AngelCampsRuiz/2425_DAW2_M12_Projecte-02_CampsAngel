@@ -26,6 +26,33 @@ $personas = $stmt_personas->fetchAll(PDO::FETCH_ASSOC);
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <title>Historial de Reservas</title>
+    <style>
+        /* Estilos para dispositivos móviles */
+        @media (max-width: 768px) {
+            table {
+                width: 100%;
+                font-size: 12px; /* Reduce el tamaño de la fuente para que quepa mejor */
+            }
+
+            table, th, td {
+                padding: 2px; /* Reduce el padding para ahorrar espacio */
+                border-collapse: collapse; /* Asegura que las celdas estén más juntas */
+            }
+
+            th, td {
+                text-align: left; /* Alinea el texto a la izquierda para una mejor lectura */
+            }
+
+            .form-control {
+                width: 100%; /* Ajusta los controles de formulario para que ocupen todo el ancho */
+                margin-bottom: 10px; /* Añade un espacio debajo de cada control para evitar que se peguen */
+            }
+
+            .btn {
+                width: 100%; /* Ajusta los botones para que ocupen todo el ancho */
+            }
+        }
+    </style>
 </head>
 
 <body>
